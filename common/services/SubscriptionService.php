@@ -31,7 +31,7 @@ class SubscriptionService implements SubscriptionServiceInterface
      */
     public function sendVerificationCode(int $authorId, string $phone): array
     {
-        if ($this->smsService === null) {
+        if (!$this->smsService instanceof SmsServiceInterface) {
             return [
                 'success' => false,
                 'message' => 'Служба отправки SMS не настроена.',
