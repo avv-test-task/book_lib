@@ -75,15 +75,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {update} {delete}',
-                'headerOptions' => ['class' => 'action-column', 'style' => 'width: 250px !important; min-width: 250px !important;'],
-                'contentOptions' => ['class' => 'action-column', 'style' => 'width: 250px !important; min-width: 250px !important; white-space: nowrap !important;'],
+                'template' => '{update} {delete}',
+                'headerOptions' => ['class' => 'action-column', 'style' => 'width: 200px !important; min-width: 200px !important;'],
+                'contentOptions' => ['class' => 'action-column', 'style' => 'width: 200px !important; min-width: 200px !important; white-space: nowrap !important;'],
                 'buttons' => [
-                    'view' => function ($url, $model) {
-                        return Html::a('Просмотр', $url, [
-                            'class' => 'btn btn-sm btn-primary',
-                        ]);
-                    },
                     'update' => function ($url, $model) {
                         return Html::a('Редактировать', $url, [
                             'class' => 'btn btn-sm btn-warning',

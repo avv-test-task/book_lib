@@ -53,22 +53,6 @@ class AuthorController extends Controller
     }
 
     /**
-     * Displays a single Author model.
-     *
-     * @param int $id
-     *
-     * @return string
-     *
-     * @throws NotFoundHttpException
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Author model.
      *
      * @return string|\yii\web\Response
@@ -78,7 +62,7 @@ class AuthorController extends Controller
         $model = new Author();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['update', 'id' => $model->id]);
         }
 
         return $this->render('create', [
@@ -100,7 +84,9 @@ class AuthorController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('success', 'Обновлено успешно');
+
+            return $this->redirect(['update', 'id' => $model->id]);
         }
 
         return $this->render('update', [

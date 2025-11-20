@@ -73,22 +73,6 @@ class BookController extends Controller
     }
 
     /**
-     * Displays a single Book model.
-     *
-     * @param int $id
-     *
-     * @return string
-     *
-     * @throws NotFoundHttpException
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Book model.
      *
      * @return string|\yii\web\Response
@@ -103,7 +87,7 @@ class BookController extends Controller
             try {
                 $book = $this->bookService->create($form);
 
-                return $this->redirect(['view', 'id' => $book->id]);
+                return $this->redirect(['update', 'id' => $book->id]);
             } catch (\DomainException $exception) {
                 Yii::$app->session->setFlash('error', $exception->getMessage());
             }
@@ -135,8 +119,9 @@ class BookController extends Controller
 
             try {
                 $this->bookService->update($book, $form);
+                Yii::$app->session->setFlash('success', 'Обновлено успешно');
 
-                return $this->redirect(['view', 'id' => $book->id]);
+                return $this->redirect(['update', 'id' => $book->id]);
             } catch (\DomainException $exception) {
                 Yii::$app->session->setFlash('error', $exception->getMessage());
             }
