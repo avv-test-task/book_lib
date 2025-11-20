@@ -49,7 +49,7 @@ class AuthorSubscriptionVerification extends ActiveRecord
         return [
             [['author_id', 'phone', 'code', 'expires_at'], 'required'],
             [['author_id', 'expires_at'], 'integer'],
-            [['phone'], 'string', 'max' => 20],
+            [['phone'], 'string', 'max' => 12],
             [['code'], 'string', 'length' => 4],
             [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => Author::class, 'targetAttribute' => ['author_id' => 'id']],
         ];
