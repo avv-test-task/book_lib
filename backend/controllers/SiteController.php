@@ -56,13 +56,15 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays homepage.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['login']);
+        }
+
+        return $this->redirect(['book/index']);
     }
 
     /**

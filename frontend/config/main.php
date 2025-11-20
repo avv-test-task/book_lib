@@ -9,6 +9,7 @@ $params = array_merge(
 
 return [
     'id' => 'app-frontend',
+    'name' => 'Библиотека',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',

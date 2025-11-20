@@ -34,11 +34,12 @@ AppAsset::register($this);
             'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
         ],
     ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+    $menuItems = [];
+    if (!Yii::$app->user->isGuest) {
+        $menuItems = [
+            ['label' => 'Книги', 'url' => ['/book/index']],
+            ['label' => 'Авторы', 'url' => ['/author/index']],
+        ];
     }     
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],

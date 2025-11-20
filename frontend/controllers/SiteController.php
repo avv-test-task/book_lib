@@ -69,13 +69,11 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays homepage.
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->redirect(['book/index']);
     }
 
     /**
