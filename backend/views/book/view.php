@@ -43,10 +43,10 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
-    <?php if ($model->cover_path): ?>
+    <?php if ($model->cover_path && $coverUrl = $model->getCoverUrl()): ?>
         <p>
             <strong>Обложка:</strong><br>
-            <img src="<?= Html::encode($model->cover_path) ?>" alt="<?= Html::encode($model->name) ?>" style="max-width: 200px;">
+            <img src="<?= Html::encode($coverUrl) ?>" alt="<?= Html::encode($model->name) ?>" style="max-width: 200px;">
         </p>
     <?php endif; ?>
 </div>

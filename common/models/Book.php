@@ -83,6 +83,25 @@ class Book extends ActiveRecord
         return $this->hasMany(Author::class, ['id' => 'author_id'])
             ->viaTable('{{%book_author}}', ['book_id' => 'id']);
     }
+
+    /**
+     * Returns the frontend URL for the cover image.
+     *
+     * @return string|null
+     */
+    public function getCoverUrl()
+    {
+        if (!$this->cover_path) {
+            return null;
+        }
+
+        if (strpos($this->cover_path, 'http') === 0) {
+            return $this->cover_path;
+        }
+
+        $frontendUrl = 'http://localhost:20080';
+        return $frontendUrl . $this->cover_path;
+    }
 }
 
 

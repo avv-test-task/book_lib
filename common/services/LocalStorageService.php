@@ -29,12 +29,7 @@ class LocalStorageService implements StorageServiceInterface
     public function __construct($basePath = null, $baseUrl = null)
     {
         if ($basePath === null) {
-            $appId = Yii::$app->id;
-            if (strpos($appId, 'backend') !== false) {
-                $this->basePath = Yii::getAlias('@backend/web/uploads/covers');
-            } else {
-                $this->basePath = Yii::getAlias('@frontend/web/uploads/covers');
-            }
+            $this->basePath = Yii::getAlias('@frontend') . '/web/uploads/covers';
         } else {
             $this->basePath = $basePath;
         }
@@ -68,12 +63,14 @@ class LocalStorageService implements StorageServiceInterface
             return;
         }
 
+        $relative = '';
         if (strpos($path, $this->baseUrl) === 0) {
-            $relative = substr($path, strlen($this->baseUrl));
-            $filePath = $this->basePath . str_replace('/', DIRECTORY_SEPARATOR, $relative);
+            $relative = ltrim(substr($path, strlen($this->baseUrl)), '/');
         } else {
-            $filePath = $this->basePath . DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR);
+            $relative = ltrim($path, '/\\');
         }
+
+        $filePath = $this->basePath . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relative);
 
         if (is_file($filePath)) {
             @unlink($filePath);
