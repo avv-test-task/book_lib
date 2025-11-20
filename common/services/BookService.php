@@ -72,6 +72,11 @@ class BookService implements BookServiceInterface
         /** @var Transaction $transaction */
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            if ($form->deleteCover && $book->cover_path) {
+                $this->storage->delete($book->cover_path);
+                $book->cover_path = null;
+            }
+
             if (!$book->save()) {
                 throw new DomainException('Failed to save book.');
             }

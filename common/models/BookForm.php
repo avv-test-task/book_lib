@@ -41,6 +41,11 @@ class BookForm extends Model
     public $coverFile;
 
     /**
+     * @var bool
+     */
+    public $deleteCover = false;
+
+    /**
      * {@inheritdoc}
      */
     public function rules()
@@ -67,6 +72,7 @@ class BookForm extends Model
                 'extensions' => ['png', 'jpg', 'jpeg', 'gif'],
                 'maxSize' => 5 * 1024 * 1024,
             ],
+            [['deleteCover'], 'boolean'],
         ];
     }
 
@@ -82,6 +88,7 @@ class BookForm extends Model
             'isbn' => 'ISBN',
             'authorIds' => 'Авторы',
             'coverFile' => 'Обложка',
+            'deleteCover' => 'Удалить обложку',
         ];
     }
 
