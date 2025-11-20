@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace common\services;
 
 use common\events\BookCreatedNotificationEvent;
@@ -15,18 +17,10 @@ use yii\web\UploadedFile;
 
 class BookService extends \yii\base\Component implements BookServiceInterface
 {
-    /**
-     */
     const EVENT_BOOK_CREATED = 'bookCreated';
 
-    /**
-     * @var StorageServiceInterface
-     */
-    private $storage;
+    private StorageServiceInterface $storage;
 
-    /**
-     * @param StorageServiceInterface $storage
-     */
     public function __construct(StorageServiceInterface $storage)
     {
         $this->storage = $storage;
@@ -35,7 +29,7 @@ class BookService extends \yii\base\Component implements BookServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(BookForm $form)
+    public function create(BookForm $form): Book
     {
         if (!$form->validate()) {
             throw new DomainException('Book form is not valid.');
@@ -69,7 +63,7 @@ class BookService extends \yii\base\Component implements BookServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function update(Book $book, BookForm $form)
+    public function update(Book $book, BookForm $form): Book
     {
         if (!$form->validate()) {
             throw new DomainException('Book form is not valid.');
@@ -104,7 +98,7 @@ class BookService extends \yii\base\Component implements BookServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(Book $book)
+    public function delete(Book $book): void
     {
         /** @var Transaction $transaction */
         $transaction = Yii::$app->db->beginTransaction();
@@ -129,10 +123,10 @@ class BookService extends \yii\base\Component implements BookServiceInterface
     }
 
     /**
-     * @param Book         $book
-     * @param UploadedFile $file|null
+     * @param Book $book
+     * @param UploadedFile|null $file
      */
-    private function saveCover(Book $book, $file)
+    private function saveCover(Book $book, ?UploadedFile $file): void
     {
         if (!$file instanceof UploadedFile) {
             return;
@@ -150,10 +144,10 @@ class BookService extends \yii\base\Component implements BookServiceInterface
     }
 
     /**
-     * @param Book  $book
-     * @param array $authorIds
+     * @param Book $book
+     * @param array<int> $authorIds
      */
-    private function syncAuthors(Book $book, array $authorIds)
+    private function syncAuthors(Book $book, array $authorIds): void
     {
         $book->unlinkAll('authors', true);
 

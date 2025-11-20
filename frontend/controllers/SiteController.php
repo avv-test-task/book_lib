@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace frontend\controllers;
 
 use frontend\models\ResendVerificationEmailForm;
@@ -22,18 +24,15 @@ use frontend\models\ContactForm;
  */
 class SiteController extends Controller
 {
-    /**
-     * @var ReportServiceInterface
-     */
-    private $reportService;
+    private ReportServiceInterface $reportService;
 
     /**
-     * @param string                  $id
-     * @param \yii\base\Module       $module
+     * @param string $id
+     * @param \yii\base\Module $module
      * @param ReportServiceInterface $reportService
-     * @param array                  $config
+     * @param array<string, mixed> $config
      */
-    public function __construct($id, $module, ReportServiceInterface $reportService, $config = [])
+    public function __construct(string $id, $module, ReportServiceInterface $reportService, array $config = [])
     {
         $this->reportService = $reportService;
         parent::__construct($id, $module, $config);
@@ -98,7 +97,7 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionReport()
+    public function actionReport(): string
     {
         $selectedYear = Yii::$app->request->get('year');
 

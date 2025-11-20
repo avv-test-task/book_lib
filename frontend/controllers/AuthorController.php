@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace frontend\controllers;
 
 use common\models\Author;
@@ -15,18 +17,15 @@ use yii\web\Response;
 
 class AuthorController extends Controller
 {
-    /**
-     * @var SmsServiceInterface|null
-     */
-    private $smsService;
+    private ?SmsServiceInterface $smsService = null;
 
     /**
      * @param string $id
      * @param \yii\base\Module $module
      * @param SmsServiceInterface|null $smsService
-     * @param array $config
+     * @param array<string, mixed> $config
      */
-    public function __construct($id, $module, SmsServiceInterface $smsService = null, $config = [])
+    public function __construct(string $id, $module, ?SmsServiceInterface $smsService = null, array $config = [])
     {
         $this->smsService = $smsService;
         parent::__construct($id, $module, $config);
@@ -36,7 +35,7 @@ class AuthorController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Author::find(),
@@ -62,7 +61,7 @@ class AuthorController extends Controller
      *
      * @throws NotFoundHttpException
      */
-    public function actionView($id)
+    public function actionView(int $id): string
     {
         $model = Author::find()->where(['id' => $id])->one();
 

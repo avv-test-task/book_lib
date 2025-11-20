@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace common\services;
 
 use common\services\contracts\SmsServiceInterface;
@@ -8,26 +10,20 @@ use yii\base\InvalidConfigException;
 
 class SmspilotSmsService implements SmsServiceInterface
 {
-    /**
-     * @var string
-     */
-    private $apiKey;
+    private string $apiKey;
 
-    /**
-     * @var string
-     */
-    private $apiUrl = 'https://smspilot.ru/api.php';
+    private string $apiUrl = 'https://smspilot.ru/api.php';
 
     /**
      * @param string|null $apiKey
      *
      * @throws InvalidConfigException
      */
-    public function __construct($apiKey = null)
+    public function __construct(?string $apiKey = null)
     {
         $this->apiKey = $apiKey ?: Yii::$app->params['smspilot']['apiKey'];
 
-        if ($this->apiKey === null) {
+        if ($this->apiKey === null || $this->apiKey === '') {
             throw new InvalidConfigException('API ключ SMS не настроен.');
         }
     }
@@ -35,7 +31,7 @@ class SmspilotSmsService implements SmsServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function send($phone, $message)
+    public function send(string $phone, string $message): bool
     {
         $params = [
             'to' => $phone,
@@ -56,12 +52,17 @@ class SmspilotSmsService implements SmsServiceInterface
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if ($httpCode !== 200) {
-            Yii::error("Отправка SMS не удалась. HTTP код: {$httpCode}, Ответ: {$response}", __METHOD__);
+        if ($response === false || $httpCode !== 200) {
+            Yii::error("Отправка SMS не удалась. HTTP код: {$httpCode}, Ответ: " . ($response ?: 'null'), __METHOD__);
             return false;
         }
 
         $result = json_decode($response, true);
+
+        if (!is_array($result)) {
+            Yii::error("Отправка SMS не удалась. Невалидный JSON ответ: {$response}", __METHOD__);
+            return false;
+        }
 
         if (isset($result['error'])) {
             Yii::error("Отправка SMS не удалась. Ошибка: {$result['error']['description']}", __METHOD__);

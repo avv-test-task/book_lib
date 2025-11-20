@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace common\services;
 
 use common\models\Book;
@@ -11,7 +13,7 @@ class ReportService implements ReportServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function getAvailableYears()
+    public function getAvailableYears(): array
     {
         return Book::find()
             ->select('year')
@@ -25,7 +27,7 @@ class ReportService implements ReportServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function getTopAuthorsByYear($year, $limit = 10)
+    public function getTopAuthorsByYear(int $year, int $limit = 10): array
     {
         return (new Query())
             ->select([
@@ -36,7 +38,7 @@ class ReportService implements ReportServiceInterface
             ->from('{{%author}} author')
             ->innerJoin('{{%book_author}} ba', 'ba.author_id = author.id')
             ->innerJoin('{{%book}} book', 'book.id = ba.book_id')
-            ->where(['book.year' => (int)$year])
+            ->where(['book.year' => $year])
             ->groupBy(['author.id', 'author.name'])
             ->orderBy(['book_count' => SORT_DESC])
             ->limit($limit)

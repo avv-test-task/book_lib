@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace common\services\contracts;
 
 use common\models\Book;
@@ -14,7 +16,7 @@ interface BookServiceInterface
      *
      * @return Book
      */
-    public function create(BookForm $form);
+    public function create(BookForm $form): Book;
 
     /**
      * Updates the given book using data from the form.
@@ -24,14 +26,14 @@ interface BookServiceInterface
      *
      * @return Book
      */
-    public function update(Book $book, BookForm $form);
+    public function update(Book $book, BookForm $form): Book;
 
     /**
      * Deletes the given book.
      *
      * @param Book $book
      */
-    public function delete(Book $book);
+    public function delete(Book $book): void;
 }
 
 

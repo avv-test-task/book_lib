@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace common\services;
 
 use common\services\contracts\StorageServiceInterface;
@@ -12,21 +14,14 @@ use yii\web\UploadedFile;
  */
 class LocalStorageService implements StorageServiceInterface
 {
-    /**
-     * @var string
-     */
-    private $basePath;
-
-    /**
-     * @var string
-     */
-    private $baseUrl;
+    private string $basePath;
+    private string $baseUrl;
 
     /**
      * @param string|null $basePath
      * @param string|null $baseUrl
      */
-    public function __construct($basePath = null, $baseUrl = null)
+    public function __construct(?string $basePath = null, ?string $baseUrl = null)
     {
         if ($basePath === null) {
             $this->basePath = Yii::getAlias('@frontend') . '/web/uploads/covers';
@@ -40,7 +35,7 @@ class LocalStorageService implements StorageServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function saveCover(UploadedFile $file)
+    public function saveCover(UploadedFile $file): string
     {
         FileHelper::createDirectory($this->basePath);
 
@@ -57,7 +52,7 @@ class LocalStorageService implements StorageServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete($path)
+    public function delete(?string $path): void
     {
         if ($path === null || $path === '') {
             return;
@@ -82,7 +77,7 @@ class LocalStorageService implements StorageServiceInterface
      *
      * @return string
      */
-    private function generateFileName(UploadedFile $file)
+    private function generateFileName(UploadedFile $file): string
     {
         $hash = sha1(uniqid($file->baseName, true) . microtime(true));
 

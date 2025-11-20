@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace common\listeners;
 
 use common\events\BookCreatedNotificationEvent;
@@ -17,13 +19,13 @@ class BookSmsNotificationListener extends BaseObject
     /**
      * @var SmsServiceInterface|null
      */
-    private $smsService;
+    private ?SmsServiceInterface $smsService = null;
 
     /**
      * @param SmsServiceInterface|null $smsService
-     * @param array $config
+     * @param array<string, mixed> $config
      */
-    public function __construct($smsService = null, $config = [])
+    public function __construct(?SmsServiceInterface $smsService = null, array $config = [])
     {
         parent::__construct($config);
         $this->smsService = $smsService;
@@ -34,7 +36,7 @@ class BookSmsNotificationListener extends BaseObject
      *
      * @param BookCreatedNotificationEvent $event
      */
-    public function handle(BookCreatedNotificationEvent $event)
+    public function handle(BookCreatedNotificationEvent $event): void
     {
         $book = $event->book;
 
@@ -56,7 +58,7 @@ class BookSmsNotificationListener extends BaseObject
             return;
         }
 
-        $authorIds = array_map(function ($author) {
+        $authorIds = array_map(function (Author $author): int {
             return $author->id;
         }, $authors);
 
@@ -68,7 +70,7 @@ class BookSmsNotificationListener extends BaseObject
             return;
         }
 
-        $authorNames = array_map(function ($author) {
+        $authorNames = array_map(function (Author $author): string {
             return $author->name;
         }, $authors);
 

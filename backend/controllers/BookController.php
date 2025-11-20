@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace backend\controllers;
 
 use backend\models\BookSearch;
@@ -15,18 +17,15 @@ use yii\web\UploadedFile;
 
 class BookController extends Controller
 {
-    /**
-     * @var BookServiceInterface
-     */
-    private $bookService;
+    private BookServiceInterface $bookService;
 
     /**
-     * @param string              $id
-     * @param \yii\base\Module    $module
+     * @param string $id
+     * @param \yii\base\Module $module
      * @param BookServiceInterface $bookService
-     * @param array               $config
+     * @param array<string, mixed> $config
      */
-    public function __construct($id, $module, BookServiceInterface $bookService, $config = [])
+    public function __construct(string $id, $module, BookServiceInterface $bookService, array $config = [])
     {
         $this->bookService = $bookService;
         parent::__construct($id, $module, $config);
@@ -35,7 +34,7 @@ class BookController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [
@@ -61,7 +60,7 @@ class BookController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $searchModel = new BookSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -77,7 +76,7 @@ class BookController extends Controller
      *
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreate(): string|\yii\web\Response
     {
         $form = new BookForm();
 
@@ -106,7 +105,7 @@ class BookController extends Controller
      *
      * @throws NotFoundHttpException
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id): string|\yii\web\Response
     {
         $book = $this->findModel($id);
 
@@ -141,7 +140,7 @@ class BookController extends Controller
      *
      * @throws NotFoundHttpException
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id): \yii\web\Response
     {
         $book = $this->findModel($id);
         $this->bookService->delete($book);
@@ -156,7 +155,7 @@ class BookController extends Controller
      *
      * @throws NotFoundHttpException
      */
-    private function findModel($id)
+    private function findModel(int $id): Book
     {
         if (($model = Book::find()->with('authors')->where(['id' => $id])->one()) !== null) {
             return $model;

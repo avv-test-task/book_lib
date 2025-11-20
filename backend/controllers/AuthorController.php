@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace backend\controllers;
 
 use backend\models\AuthorSearch;
@@ -15,7 +17,7 @@ class AuthorController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [
@@ -41,7 +43,7 @@ class AuthorController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $searchModel = new AuthorSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -57,7 +59,7 @@ class AuthorController extends Controller
      *
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreate(): string|\yii\web\Response
     {
         $model = new Author();
 
@@ -81,7 +83,7 @@ class AuthorController extends Controller
      *
      * @throws NotFoundHttpException
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id): string|\yii\web\Response
     {
         $model = $this->findModel($id);
 
@@ -105,7 +107,7 @@ class AuthorController extends Controller
      *
      * @throws NotFoundHttpException
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id): \yii\web\Response
     {
         $this->findModel($id)->delete();
 
@@ -119,7 +121,7 @@ class AuthorController extends Controller
      *
      * @throws NotFoundHttpException
      */
-    private function findModel($id)
+    private function findModel(int $id): Author
     {
         if (($model = Author::findOne($id)) !== null) {
             return $model;

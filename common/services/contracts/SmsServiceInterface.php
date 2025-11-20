@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace common\services\contracts;
 
 interface SmsServiceInterface
@@ -12,6 +14,6 @@ interface SmsServiceInterface
      *
      * @return bool
      */
-    public function send($phone, $message);
+    public function send(string $phone, string $message): bool;
 }
 
