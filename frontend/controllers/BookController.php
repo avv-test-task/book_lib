@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace frontend\controllers;
 
 use common\models\Book;
@@ -9,10 +11,7 @@ use yii\web\NotFoundHttpException;
 
 class BookController extends Controller
 {
-    /**
-     * @return string
-     */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Book::find()->with('authors'),
@@ -30,16 +29,14 @@ class BookController extends Controller
     }
 
     /**
-     * @param int $id
-     * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView($id)
+    public function actionView(int $id): string
     {
         $model = Book::find()->with('authors')->where(['id' => $id])->one();
 
         if ($model === null) {
-            throw new NotFoundHttpException('The requested book does not exist.');
+            throw new NotFoundHttpException('Книга не найдена.');
         }
 
         return $this->render('view', [

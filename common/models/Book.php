@@ -88,8 +88,6 @@ class Book extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Author]] models.
-     *
      * @return ActiveQuery
      */
     public function getAuthors()

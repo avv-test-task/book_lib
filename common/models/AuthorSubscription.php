@@ -8,8 +8,6 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "author_subscription".
- *
  * @property int $id
  * @property int $author_id
  * @property string $phone

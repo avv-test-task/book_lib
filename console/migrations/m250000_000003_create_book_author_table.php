@@ -2,10 +2,6 @@
 
 use yii\db\Migration;
 
-/**
- * Handles the creation of table `{{%book_author}}` which represents
- * the many-to-many relation between books and authors.
- */
 class m250000_000003_create_book_author_table extends Migration
 {
     /**

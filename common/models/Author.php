@@ -7,8 +7,6 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "author".
- *
  * @property int $id
  * @property string $name
  * @property int|null $created_at
