@@ -38,30 +38,23 @@ class BookSmsNotificationListener extends BaseObject
             }
         }
 
-        $authors = Author::find()
-            ->innerJoin('{{%book_author}} ba', 'ba.author_id = {{%author}}.id')
-            ->where(['ba.book_id' => $book->id])
-            ->all();
-
-        if (empty($authors)) {
-            return;
-        }
-
-        $authorIds = array_map(fn(Author $author): int => $author->id, $authors);
-
         $subscriptions = AuthorSubscription::find()
-            ->where(['author_id' => $authorIds])
+            ->innerJoin('{{%book_author}} ba', 'ba.author_id = {{%author_subscription}}.author_id')
+            ->where(['ba.book_id' => $book->id])
+            ->with('author')
             ->all();
 
         if (empty($subscriptions)) {
             return;
         }
 
-        $authorNames = array_map(fn(Author $author): string => $author->name, $authors);
-
-        $message = 'Новая книга "' . $book->name . '" от ' . implode(', ', $authorNames) . ' доступна в библиотеке!';
-
         foreach ($subscriptions as $subscription) {
+            if ($subscription->author === null) {
+                continue;
+            }
+
+            $message = 'Новая книга "' . $book->name . '" от ' . $subscription->author->name . ' доступна в библиотеке!';
+
             try {
                 $this->smsService->send($subscription->phone, $message);
             } catch (Throwable $exception) {
