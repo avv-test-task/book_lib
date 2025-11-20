@@ -12,6 +12,11 @@ class m250000_000002_create_book_table extends Migration
      */
     public function safeUp()
     {
+        $tableOptions = null;
+        if ($this->db->driverName === 'mysql') {
+            $tableOptions = 'CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE=InnoDB';
+        }
+
         $this->createTable('{{%book}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull(),
@@ -21,7 +26,7 @@ class m250000_000002_create_book_table extends Migration
             'cover_path' => $this->string(255),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
-        ]);
+        ], $tableOptions);
 
         $this->createIndex(
             'idx-book-year',
