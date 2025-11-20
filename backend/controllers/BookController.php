@@ -118,6 +118,7 @@ class BookController extends Controller
     {
         $book = $this->findModel($id);
         $this->bookService->delete($book);
+        Yii::$app->session->setFlash('success', 'Книга удалена успешно');
 
         return $this->redirect(['index']);
     }

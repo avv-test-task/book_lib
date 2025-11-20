@@ -89,6 +89,7 @@ class AuthorController extends Controller
     public function actionDelete(int $id): Response
     {
         $this->findModel($id)->delete();
+        Yii::$app->session->setFlash('success', 'Автор удален успешно');
 
         return $this->redirect(['index']);
     }
