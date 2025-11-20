@@ -2,6 +2,7 @@
 
 use common\models\Book;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $model Book */
 ?>
@@ -20,7 +21,7 @@ use yii\helpers\Html;
     </p>
     <p>
         Авторы:
-        <?= implode(', ', array_map(static fn($author) => Html::encode($author->name), $model->authors)) ?>
+        <?= implode(', ', array_map(static fn($author) => Html::a(Html::encode($author->name), ['/author/view', 'id' => $author->id]), $model->authors)) ?>
     </p>
 </div>
 
