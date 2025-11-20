@@ -20,9 +20,7 @@ use yii\helpers\Html;
     </p>
     <p>
         Авторы:
-        <?= implode(', ', array_map(static function ($author) {
-            return Html::encode($author->name);
-        }, $model->authors)) ?>
+        <?= implode(', ', array_map(static fn($author) => Html::encode($author->name), $model->authors)) ?>
     </p>
 </div>
 

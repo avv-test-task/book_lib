@@ -44,7 +44,7 @@ class LoginForm extends Model
     /**
      * {@inheritdoc}
      */
-    public function validatePassword($attribute, $params)
+    public function validatePassword($attribute, $params): void
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();

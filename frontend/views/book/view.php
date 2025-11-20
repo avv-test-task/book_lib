@@ -15,9 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         Авторы:
-        <?= implode(', ', array_map(static function ($author) {
-            return Html::encode($author->name);
-        }, $model->authors)) ?>
+        <?= implode(', ', array_map(static fn($author) => Html::encode($author->name), $model->authors)) ?>
     </p>
 
     <?php if ($model->year || $model->isbn): ?>

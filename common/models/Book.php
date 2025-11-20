@@ -99,8 +99,6 @@ class Book extends ActiveRecord
     }
 
     /**
-     * Returns the frontend URL for the cover image.
-     *
      * @return string|null
      */
     public function getCoverUrl()

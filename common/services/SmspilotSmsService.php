@@ -15,8 +15,6 @@ class SmspilotSmsService implements SmsServiceInterface
     private string $apiUrl = 'https://smspilot.ru/api.php';
 
     /**
-     * @param string|null $apiKey
-     *
      * @throws InvalidConfigException
      */
     public function __construct(?string $apiKey = null)

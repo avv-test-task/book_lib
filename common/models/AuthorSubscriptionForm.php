@@ -4,9 +4,6 @@ namespace common\models;
 
 use yii\base\Model;
 
-/**
- * Form model for author subscription.
- */
 class AuthorSubscriptionForm extends Model
 {
     /**
@@ -43,15 +40,13 @@ class AuthorSubscriptionForm extends Model
     }
 
     /**
-     * Validates phone number after normalization.
-     *
      * @param string $attribute
      */
-    public function validatePhone($attribute)
+    public function validatePhone($attribute): void
     {
-        $phone = $this->normalizePhone($this->$attribute);
+        $phone = static::normalizePhone($this->$attribute);
 
-        if (empty($phone)) {
+        if ($phone === '' || $phone === '0') {
             $this->addError($attribute, 'Номер телефона не может быть пустым.');
             return;
         }
@@ -77,13 +72,9 @@ class AuthorSubscriptionForm extends Model
     }
 
     /**
-     * Normalizes phone number format.
-     *
      * @param string $phone
-     *
-     * @return string
      */
-    public static function normalizePhone($phone)
+    public static function normalizePhone($phone): string
     {
         if (empty($phone)) {
             return '';

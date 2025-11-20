@@ -9,9 +9,6 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 
-/**
- * Site controller
- */
 class SiteController extends Controller
 {
     /**
@@ -68,8 +65,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Login action.
-     *
      * @return string|Response
      */
     public function actionLogin()
@@ -93,8 +88,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Logout action.
-     *
      * @return Response
      */
     public function actionLogout()

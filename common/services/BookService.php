@@ -124,10 +124,6 @@ class BookService extends Component implements BookServiceInterface
         }
     }
 
-    /**
-     * @param Book $book
-     * @param UploadedFile|null $file
-     */
     private function saveCover(Book $book, ?UploadedFile $file): void
     {
         if (!$file instanceof UploadedFile) {
@@ -146,14 +142,13 @@ class BookService extends Component implements BookServiceInterface
     }
 
     /**
-     * @param Book $book
      * @param array<int> $authorIds
      */
     private function syncAuthors(Book $book, array $authorIds): void
     {
         $book->unlinkAll('authors', true);
 
-        if (empty($authorIds)) {
+        if ($authorIds === []) {
             return;
         }
 

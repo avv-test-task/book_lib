@@ -10,8 +10,6 @@ use yii\web\NotFoundHttpException;
 class BookController extends Controller
 {
     /**
-     * Lists all Book models.
-     *
      * @return string
      */
     public function actionIndex()
@@ -32,12 +30,8 @@ class BookController extends Controller
     }
 
     /**
-     * Displays a single Book model.
-     *
      * @param int $id
-     *
      * @return string
-     *
      * @throws NotFoundHttpException
      */
     public function actionView($id)

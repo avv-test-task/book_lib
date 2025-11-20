@@ -61,10 +61,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Авторы',
                 'format' => 'raw',
-                'value' => function (\common\models\Book $model) {
-                    $authors = array_map(static function ($author) {
-                        return Html::encode($author->name);
-                    }, $model->authors);
+                'value' => function (\common\models\Book $model): string {
+                    $authors = array_map(static fn($author) => Html::encode($author->name), $model->authors);
                     $fullText = implode(', ', $authors);
                     $text = $fullText;
                     if (mb_strlen($text) > 40) {
@@ -79,18 +77,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['class' => 'action-column', 'style' => 'width: 200px !important; min-width: 200px !important;'],
                 'contentOptions' => ['class' => 'action-column', 'style' => 'width: 200px !important; min-width: 200px !important; white-space: nowrap !important;'],
                 'buttons' => [
-                    'update' => function ($url, $model) {
-                        return Html::a('Редактировать', $url, [
-                            'class' => 'btn btn-sm btn-warning',
-                        ]);
-                    },
-                    'delete' => function ($url, $model) {
-                        return Html::a('Удалить', $url, [
-                            'class' => 'btn btn-sm btn-danger',
-                            'data-confirm' => 'Вы уверены, что хотите удалить этот элемент?',
-                            'data-method' => 'post',
-                        ]);
-                    },
+                    'update' => fn($url, $model) => Html::a('Редактировать', $url, [
+                        'class' => 'btn btn-sm btn-warning',
+                    ]),
+                    'delete' => fn($url, $model) => Html::a('Удалить', $url, [
+                        'class' => 'btn btn-sm btn-danger',
+                        'data-confirm' => 'Вы уверены, что хотите удалить этот элемент?',
+                        'data-method' => 'post',
+                    ]),
                 ],
             ],
         ],

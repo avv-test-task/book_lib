@@ -10,25 +10,14 @@ use Yii;
 use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
-/**
- * Local filesystem storage implementation for uploaded files.
- */
 class LocalStorageService implements StorageServiceInterface
 {
     private string $basePath;
     private string $baseUrl;
 
-    /**
-     * @param string|null $basePath
-     * @param string|null $baseUrl
-     */
     public function __construct(?string $basePath = null, ?string $baseUrl = null)
     {
-        if ($basePath === null) {
-            $this->basePath = Yii::getAlias('@frontend') . '/web/uploads/covers';
-        } else {
-            $this->basePath = $basePath;
-        }
+        $this->basePath = $basePath ?? Yii::getAlias('@frontend') . '/web/uploads/covers';
         
         $this->baseUrl = $baseUrl ?: '/uploads/covers';
     }
@@ -73,11 +62,7 @@ class LocalStorageService implements StorageServiceInterface
         }
     }
 
-    /**
-     * @param UploadedFile $file
-     *
-     * @return string
-     */
+    
     private function generateFileName(UploadedFile $file): string
     {
         $hash = sha1(uniqid($file->baseName, true) . microtime(true));

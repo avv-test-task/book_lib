@@ -39,9 +39,6 @@ class AuthorController extends Controller
         ];
     }
 
-    /**
-     * @return string
-     */
     public function actionIndex(): string
     {
         $searchModel = new AuthorSearch();
@@ -53,9 +50,6 @@ class AuthorController extends Controller
         ]);
     }
 
-    /**
-     * @return string|Response
-     */
     public function actionCreate(): string|Response
     {
         $model = new Author();
@@ -72,9 +66,7 @@ class AuthorController extends Controller
     }
 
     /**
-     * @param int $id
      *
-     * @return string|Response
      *
      * @throws NotFoundHttpException
      */
@@ -94,9 +86,7 @@ class AuthorController extends Controller
     }
 
     /**
-     * @param int $id
      *
-     * @return Response
      *
      * @throws NotFoundHttpException
      */
@@ -108,9 +98,7 @@ class AuthorController extends Controller
     }
 
     /**
-     * @param int $id
      *
-     * @return Author
      *
      * @throws NotFoundHttpException
      */

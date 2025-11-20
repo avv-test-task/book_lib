@@ -5,9 +5,6 @@ namespace common\models;
 use yii\base\Model;
 use yii\web\UploadedFile;
 
-/**
- * Form model for creating and updating books.
- */
 class BookForm extends Model
 {
     /**
@@ -92,12 +89,7 @@ class BookForm extends Model
         ];
     }
 
-    /**
-     * Loads form fields from an existing Book model.
-     *
-     * @param Book $book
-     */
-    public function loadFromBook(Book $book)
+    public function loadFromBook(Book $book): void
     {
         $this->name = $book->name;
         $this->description = $book->description;
@@ -106,10 +98,7 @@ class BookForm extends Model
         $this->authorIds = $book->getAuthors()->select('id')->column();
     }
 
-    /**
-     * @param Book $book
-     */
-    public function applyToBook(Book $book)
+    public function applyToBook(Book $book): void
     {
         $book->name = $this->name;
         $book->description = $this->description;

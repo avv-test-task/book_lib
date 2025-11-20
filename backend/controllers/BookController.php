@@ -23,9 +23,6 @@ class BookController extends Controller
     private BookServiceInterface $bookService;
 
     /**
-     * @param string $id
-     * @param Module $module
-     * @param BookServiceInterface $bookService
      * @param array<string, mixed> $config
      */
     public function __construct(string $id, Module $module, BookServiceInterface $bookService, array $config = [])
@@ -58,9 +55,6 @@ class BookController extends Controller
         ];
     }
 
-    /**
-     * @return string
-     */
     public function actionIndex(): string
     {
         $searchModel = new BookSearch();
@@ -72,9 +66,6 @@ class BookController extends Controller
         ]);
     }
 
-    /**
-     * @return string|Response
-     */
     public function actionCreate(): string|Response
     {
         $form = new BookForm();
@@ -98,8 +89,6 @@ class BookController extends Controller
     }
 
     /**
-     * @param int $id
-     * @return string|Response
      * @throws NotFoundHttpException
      */
     public function actionUpdate(int $id): string|Response
@@ -129,8 +118,6 @@ class BookController extends Controller
     }
 
     /**
-     * @param int $id
-     * @return Response
      * @throws NotFoundHttpException
      */
     public function actionDelete(int $id): Response
@@ -142,9 +129,7 @@ class BookController extends Controller
     }
 
     /**
-     * @param int $id
      *
-     * @return Book
      *
      * @throws NotFoundHttpException
      */

@@ -21,9 +21,6 @@ class AuthorController extends Controller
     private ?SmsServiceInterface $smsService = null;
 
     /**
-     * @param string $id
-     * @param Module $module
-     * @param SmsServiceInterface|null $smsService
      * @param array<string, mixed> $config
      */
     public function __construct(string $id, Module $module, ?SmsServiceInterface $smsService = null, array $config = [])
@@ -31,9 +28,6 @@ class AuthorController extends Controller
         $this->smsService = $smsService;
         parent::__construct($id, $module, $config);
     }
-    /**
-     * @return string
-     */
     public function actionIndex(): string
     {
         $dataProvider = new ActiveDataProvider([
@@ -52,11 +46,9 @@ class AuthorController extends Controller
     }
 
     /**
-     * @param int $id
-     * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView(int $id): string
+    public function actionView(int $id): string|Response
     {
         $model = Author::find()->where(['id' => $id])->one();
 
@@ -82,7 +74,7 @@ class AuthorController extends Controller
                         return $this->refresh();
                     }
 
-                    if ($this->smsService !== null) {
+                    if ($this->smsService instanceof SmsServiceInterface) {
                         $code = AuthorSubscriptionVerification::generateCode();
                         $expiresAt = time() + 600;
 
@@ -115,7 +107,7 @@ class AuthorController extends Controller
                     }
                 }
             } else {
-                if (empty(trim($subscriptionForm->verificationCode))) {
+                if (in_array(trim($subscriptionForm->verificationCode), ['', '0'], true)) {
                     Yii::$app->session->setFlash('error', 'Введите код подтверждения.');
                     return $this->refresh();
                 }
@@ -161,9 +153,8 @@ class AuthorController extends Controller
                         Yii::$app->session->remove("subscription_phone_{$model->id}");
                         Yii::$app->session->setFlash('success', 'Вы успешно подписались на обновления!');
                         return $this->refresh();
-                    } else {
-                        Yii::$app->session->setFlash('error', 'Ошибка при сохранении подписки.');
                     }
+                    Yii::$app->session->setFlash('error', 'Ошибка при сохранении подписки.');
                 } else {
                     AuthorSubscriptionVerification::deleteAll([
                         'author_id' => $subscriptionForm->authorId,

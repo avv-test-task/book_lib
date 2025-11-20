@@ -11,6 +11,7 @@ use yii\base\InvalidArgumentException;
 use yii\base\Module;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
+use yii\web\Response;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
@@ -20,17 +21,11 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 
-/**
- * Site controller
- */
 class SiteController extends Controller
 {
     private ReportServiceInterface $reportService;
 
     /**
-     * @param string $id
-     * @param Module $module
-     * @param ReportServiceInterface $reportService
      * @param array<string, mixed> $config
      */
     public function __construct(string $id, Module $module, ReportServiceInterface $reportService, array $config = [])
@@ -93,11 +88,6 @@ class SiteController extends Controller
         return $this->redirect(['book/index']);
     }
 
-    /**
-     * Displays the report page with top 10 authors by year.
-     *
-     * @return string
-     */
     public function actionReport(): string
     {
         $selectedYear = Yii::$app->request->get('year');
@@ -117,8 +107,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Logs in a user.
-     *
      * @return mixed
      */
     public function actionLogin()
@@ -140,8 +128,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Logs out the current user.
-     *
      * @return mixed
      */
     public function actionLogout()
@@ -152,8 +138,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays contact page.
-     *
      * @return mixed
      */
     public function actionContact()
@@ -175,8 +159,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays about page.
-     *
      * @return mixed
      */
     public function actionAbout()
@@ -185,8 +167,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Signs user up.
-     *
      * @return mixed
      */
     public function actionSignup()
@@ -203,8 +183,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Requests password reset.
-     *
      * @return mixed
      */
     public function actionRequestPasswordReset()
@@ -226,13 +204,10 @@ class SiteController extends Controller
     }
 
     /**
-     * Resets password.
-     *
-     * @param string $token
      * @return mixed
      * @throws BadRequestHttpException
      */
-    public function actionResetPassword($token)
+    public function actionResetPassword(string $token)
     {
         try {
             $model = new ResetPasswordForm($token);
@@ -252,13 +227,10 @@ class SiteController extends Controller
     }
 
     /**
-     * Verify email address
-     *
-     * @param string $token
      * @throws BadRequestHttpException
-     * @return yii\web\Response
+     * @return Response
      */
-    public function actionVerifyEmail($token)
+    public function actionVerifyEmail(string $token): Response
     {
         try {
             $model = new VerifyEmailForm($token);
@@ -274,12 +246,7 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    /**
-     * Resend verification email
-     *
-     * @return mixed
-     */
-    public function actionResendVerificationEmail()
+    public function actionResendVerificationEmail(): string|Response
     {
         $model = new ResendVerificationEmailForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
