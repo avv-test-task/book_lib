@@ -63,13 +63,13 @@ class Book extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'description' => 'Description',
-            'year' => 'Year',
+            'name' => 'Название',
+            'description' => 'Описание',
+            'year' => 'Год',
             'isbn' => 'ISBN',
-            'cover_path' => 'Cover Path',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'cover_path' => 'Обложка',
+            'created_at' => 'Создано',
+            'updated_at' => 'Обновлено',
         ];
     }
 

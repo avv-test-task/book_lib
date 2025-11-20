@@ -7,14 +7,14 @@ use yii\helpers\Html;
 /* @var $searchModel backend\models\BookSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Books';
+$this->title = 'Книги';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="book-index">
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Book', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Создать книгу', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'year',
             'isbn',
             [
-                'label' => 'Authors',
+                'label' => 'Авторы',
                 'value' => function (\common\models\Book $model) {
                     return implode(', ', array_map(static function ($author) {
                         return $author->name;
@@ -35,6 +35,26 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
+                'template' => '{view} {update} {delete}',
+                'buttons' => [
+                    'view' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
+                            'title' => 'Просмотр',
+                        ]);
+                    },
+                    'update' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                            'title' => 'Редактировать',
+                        ]);
+                    },
+                    'delete' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+                            'title' => 'Удалить',
+                            'data-confirm' => 'Вы уверены, что хотите удалить этот элемент?',
+                            'data-method' => 'post',
+                        ]);
+                    },
+                ],
             ],
         ],
     ]) ?>

@@ -54,9 +54,9 @@ class Author extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'name' => 'Имя',
+            'created_at' => 'Создано',
+            'updated_at' => 'Обновлено',
         ];
     }
 

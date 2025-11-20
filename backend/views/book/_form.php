@@ -26,7 +26,7 @@ $authors = ArrayHelper::map(Author::find()->orderBy(['name' => SORT_ASC])->all()
     <?= $form->field($formModel, 'coverFile')->fileInput() ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

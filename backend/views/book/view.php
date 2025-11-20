@@ -7,18 +7,18 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Book */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Books', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Книги', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="book-view">
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this book?',
+                'confirm' => 'Вы уверены, что хотите удалить эту книгу?',
                 'method' => 'post',
             ],
         ]) ?>
@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'year',
             'isbn',
             [
-                'label' => 'Authors',
+                'label' => 'Авторы',
                 'value' => implode(', ', array_map(static function ($author) {
                     return $author->name;
                 }, $model->authors)),
@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php if ($model->cover_path): ?>
         <p>
-            <strong>Cover:</strong><br>
+            <strong>Обложка:</strong><br>
             <img src="<?= Html::encode($model->cover_path) ?>" alt="<?= Html::encode($model->name) ?>" style="max-width: 200px;">
         </p>
     <?php endif; ?>

@@ -8,10 +8,10 @@ use yii\helpers\Html;
 /* @var $model Book */
 /* @var $formModel BookForm */
 
-$this->title = 'Update Book: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Books', 'url' => ['index']];
+$this->title = 'Редактировать книгу: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Книги', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Редактировать';
 ?>
 <div class="book-update">
     <h1><?= Html::encode($this->title) ?></h1>

@@ -71,6 +71,21 @@ class BookForm extends Model
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'name' => 'Название',
+            'description' => 'Описание',
+            'year' => 'Год',
+            'isbn' => 'ISBN',
+            'authorIds' => 'Авторы',
+            'coverFile' => 'Обложка',
+        ];
+    }
+
+    /**
      * Loads form fields from an existing Book model.
      *
      * @param Book $book
