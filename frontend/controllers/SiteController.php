@@ -228,7 +228,6 @@ class SiteController extends Controller
 
     /**
      * @throws BadRequestHttpException
-     * @return Response
      */
     public function actionVerifyEmail(string $token): Response
     {

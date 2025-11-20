@@ -88,9 +88,6 @@ class BookController extends Controller
         ]);
     }
 
-    /**
-     * @throws NotFoundHttpException
-     */
     public function actionUpdate(int $id): string|Response
     {
         $book = $this->findModel($id);
@@ -117,9 +114,6 @@ class BookController extends Controller
         ]);
     }
 
-    /**
-     * @throws NotFoundHttpException
-     */
     public function actionDelete(int $id): Response
     {
         $book = $this->findModel($id);
@@ -129,8 +123,6 @@ class BookController extends Controller
     }
 
     /**
-     *
-     *
      * @throws NotFoundHttpException
      */
     private function findModel(int $id): Book

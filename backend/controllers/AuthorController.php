@@ -66,8 +66,6 @@ class AuthorController extends Controller
     }
 
     /**
-     *
-     *
      * @throws NotFoundHttpException
      */
     public function actionUpdate(int $id): string|Response
@@ -86,8 +84,6 @@ class AuthorController extends Controller
     }
 
     /**
-     *
-     *
      * @throws NotFoundHttpException
      */
     public function actionDelete(int $id): Response
@@ -98,8 +94,6 @@ class AuthorController extends Controller
     }
 
     /**
-     *
-     *
      * @throws NotFoundHttpException
      */
     private function findModel(int $id): Author
