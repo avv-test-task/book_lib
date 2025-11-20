@@ -3,9 +3,11 @@
 use common\services\BookService;
 use common\services\contracts\BookServiceInterface;
 use common\services\contracts\ReportServiceInterface;
+use common\services\contracts\SmsServiceInterface;
 use common\services\contracts\StorageServiceInterface;
 use common\services\LocalStorageService;
 use common\services\ReportService;
+use common\services\SmspilotSmsService;
 
 return [
     'aliases' => [
@@ -18,6 +20,7 @@ return [
             BookServiceInterface::class => BookService::class,
             ReportServiceInterface::class => ReportService::class,
             StorageServiceInterface::class => LocalStorageService::class,
+            SmsServiceInterface::class => SmspilotSmsService::class,
         ],
     ],
     'components' => [

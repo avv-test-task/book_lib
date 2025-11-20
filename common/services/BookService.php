@@ -3,9 +3,11 @@
 namespace common\services;
 
 use common\models\Author;
+use common\models\AuthorSubscription;
 use common\models\Book;
 use common\models\BookForm;
 use common\services\contracts\BookServiceInterface;
+use common\services\contracts\SmsServiceInterface;
 use common\services\contracts\StorageServiceInterface;
 use DomainException;
 use Yii;
@@ -20,11 +22,18 @@ class BookService implements BookServiceInterface
     private $storage;
 
     /**
-     * @param StorageServiceInterface $storage
+     * @var SmsServiceInterface|null
      */
-    public function __construct(StorageServiceInterface $storage)
+    private $smsService;
+
+    /**
+     * @param StorageServiceInterface $storage
+     * @param SmsServiceInterface|null $smsService
+     */
+    public function __construct(StorageServiceInterface $storage, SmsServiceInterface $smsService = null)
     {
         $this->storage = $storage;
+        $this->smsService = $smsService;
     }
 
     /**
@@ -50,6 +59,8 @@ class BookService implements BookServiceInterface
             $this->syncAuthors($book, $form->authorIds);
 
             $transaction->commit();
+
+            $this->notifySubscribers($book);
         } catch (\Throwable $exception) {
             $transaction->rollBack();
             throw $exception;
@@ -164,6 +175,51 @@ class BookService implements BookServiceInterface
             }
 
             $book->link('authors', $authors[$authorId]);
+        }
+    }
+
+    /**
+     * @param Book $book
+     */
+    private function notifySubscribers(Book $book)
+    {
+        if ($this->smsService === null) {
+            return;
+        }
+
+        $authors = Author::find()
+            ->innerJoin('{{%book_author}} ba', 'ba.author_id = {{%author}}.id')
+            ->where(['ba.book_id' => $book->id])
+            ->all();
+
+        if (empty($authors)) {
+            return;
+        }
+
+        $authorIds = array_map(function ($author) {
+            return $author->id;
+        }, $authors);
+
+        $subscriptions = AuthorSubscription::find()
+            ->where(['author_id' => $authorIds])
+            ->all();
+
+        if (empty($subscriptions)) {
+            return;
+        }
+
+        $authorNames = array_map(function ($author) {
+            return $author->name;
+        }, $authors);
+
+        $message = 'Новая книга "' . $book->name . '" от ' . implode(', ', $authorNames) . ' доступна в библиотеке!';
+
+        foreach ($subscriptions as $subscription) {
+            try {
+                $this->smsService->send($subscription->phone, $message);
+            } catch (\Throwable $exception) {
+                Yii::error("Не удалось отправить SMS на номер {$subscription->phone}: {$exception->getMessage()}", __METHOD__);
+            }
         }
     }
 }
