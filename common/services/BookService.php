@@ -19,7 +19,7 @@ use yii\web\UploadedFile;
 
 class BookService extends Component implements BookServiceInterface
 {
-    const EVENT_BOOK_CREATED = 'bookCreated';
+    const EVENT_BOOK_CREATED_NOTIFICATION = 'bookCreatedNotification';
 
     private StorageServiceInterface $storage;
 
@@ -53,7 +53,7 @@ class BookService extends Component implements BookServiceInterface
             $transaction->commit();
 
             $event = new BookCreatedNotificationEvent(['book' => $book]);
-            $this->trigger(self::EVENT_BOOK_CREATED, $event);
+            $this->trigger(self::EVENT_BOOK_CREATED_NOTIFICATION, $event);
         } catch (Throwable $exception) {
             $transaction->rollBack();
             throw $exception;
