@@ -3,7 +3,6 @@
 use common\events\BookCreatedNotificationEvent;
 use common\listeners\BookSmsNotificationListener;
 use common\services\BookService;
-use Yii;
 use yii\base\Event;
 
 date_default_timezone_set('Europe/Moscow');

@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace frontend\controllers;
 
 use common\models\Author;
-use common\models\AuthorSubscription;
 use common\models\AuthorSubscriptionForm;
-use common\models\AuthorSubscriptionVerification;
-use common\services\contracts\SmsServiceInterface;
+use common\services\contracts\SubscriptionServiceInterface;
 use Yii;
 use yii\base\Module;
 use yii\data\ActiveDataProvider;
@@ -18,14 +16,14 @@ use yii\web\Response;
 
 class AuthorController extends Controller
 {
-    private ?SmsServiceInterface $smsService = null;
+    private SubscriptionServiceInterface $subscriptionService;
 
     /**
      * @param array<string, mixed> $config
      */
-    public function __construct(string $id, Module $module, ?SmsServiceInterface $smsService = null, array $config = [])
+    public function __construct(string $id, Module $module, SubscriptionServiceInterface $subscriptionService, array $config = [])
     {
-        $this->smsService = $smsService;
+        $this->subscriptionService = $subscriptionService;
         parent::__construct($id, $module, $config);
     }
     public function actionIndex(): string
@@ -45,9 +43,6 @@ class AuthorController extends Controller
         ]);
     }
 
-    /**
-     * @throws NotFoundHttpException
-     */
     public function actionView(int $id): string|Response
     {
         $model = Author::find()->where(['id' => $id])->one();
@@ -65,53 +60,23 @@ class AuthorController extends Controller
         if ($subscriptionForm->load(Yii::$app->request->post())) {
             if (empty($subscriptionForm->verificationCode)) {
                 if ($subscriptionForm->validate(['phone', 'authorId'])) {
-                    $existingSubscription = AuthorSubscription::find()
-                        ->where(['author_id' => $subscriptionForm->authorId, 'phone' => $subscriptionForm->phone])
-                        ->one();
-
-                    if ($existingSubscription !== null) {
+                    $authorId = (int)$subscriptionForm->authorId;
+                    if ($this->subscriptionService->subscriptionExists($authorId, $subscriptionForm->phone)) {
                         Yii::$app->session->setFlash('info', 'Вы уже подписаны на обновления этого автора.');
                         return $this->refresh();
                     }
 
-                    if ($this->smsService instanceof SmsServiceInterface) {
-                        $code = AuthorSubscriptionVerification::generateCode();
-                        $expiresAt = time() + 600;
-
-                        AuthorSubscriptionVerification::deleteAll([
-                            'author_id' => $subscriptionForm->authorId,
-                            'phone' => $subscriptionForm->phone,
-                        ]);
-
-                        $verification = new AuthorSubscriptionVerification();
-                        $verification->author_id = $subscriptionForm->authorId;
-                        $verification->phone = $subscriptionForm->phone;
-                        $verification->code = $code;
-                        $verification->expires_at = $expiresAt;
-
-                        if ($verification->save()) {
-                            $message = "Ваш код подтверждения: {$code}";
-                            if ($this->smsService->send($subscriptionForm->phone, $message)) {
-                                Yii::$app->session->set("subscription_phone_{$model->id}", $subscriptionForm->phone);
-                                Yii::$app->session->setFlash('success', 'Код подтверждения отправлен на ваш номер телефона.');
-                                $codeSent = true;
-                                $phoneInSession = $subscriptionForm->phone;
-                            } else {
-                                Yii::$app->session->setFlash('error', 'Не удалось отправить SMS. Попробуйте позже.');
-                            }
-                        } else {
-                            Yii::$app->session->setFlash('error', 'Ошибка при создании кода подтверждения.');
-                        }
-                    } else {
-                        Yii::$app->session->setFlash('error', 'Служба отправки SMS не настроена.');
+                    $result = $this->subscriptionService->sendVerificationCode($authorId, $subscriptionForm->phone);
+                    
+                    if ($result['success']) {
+                        Yii::$app->session->set("subscription_phone_{$model->id}", $subscriptionForm->phone);
+                        $codeSent = true;
+                        $phoneInSession = $subscriptionForm->phone;
                     }
+                    
+                    Yii::$app->session->setFlash($result['success'] ? 'success' : 'error', $result['message']);
                 }
             } else {
-                if (in_array(trim($subscriptionForm->verificationCode), ['', '0'], true)) {
-                    Yii::$app->session->setFlash('error', 'Введите код подтверждения.');
-                    return $this->refresh();
-                }
-
                 if ($phoneInSession === null || $phoneInSession !== $subscriptionForm->phone) {
                     Yii::$app->session->setFlash('error', 'Неверный номер телефона. Начните подписку заново.');
                     Yii::$app->session->remove("subscription_phone_{$model->id}");
@@ -122,46 +87,18 @@ class AuthorController extends Controller
                     return $this->refresh();
                 }
 
-                $verification = AuthorSubscriptionVerification::find()
-                    ->where([
-                        'author_id' => $subscriptionForm->authorId,
-                        'phone' => $subscriptionForm->phone,
-                        'code' => trim($subscriptionForm->verificationCode),
-                    ])
-                    ->orderBy(['created_at' => SORT_DESC])
-                    ->one();
+                $authorId = (int)$subscriptionForm->authorId;
+                $result = $this->subscriptionService->verifyAndSubscribe(
+                    $authorId,
+                    $subscriptionForm->phone,
+                    $subscriptionForm->verificationCode
+                );
 
-                if ($verification === null || $verification->isExpired()) {
-                    Yii::$app->session->setFlash('error', 'Неверный или устаревший код подтверждения.');
-                    return $this->refresh();
-                }
+                $flashType = $result['success'] ? ($result['alreadySubscribed'] ? 'info' : 'success') : 'error';
+                Yii::$app->session->setFlash($flashType, $result['message']);
 
-                $existingSubscription = AuthorSubscription::find()
-                    ->where(['author_id' => $subscriptionForm->authorId, 'phone' => $subscriptionForm->phone])
-                    ->one();
-
-                if ($existingSubscription === null) {
-                    $subscription = new AuthorSubscription();
-                    $subscription->author_id = $subscriptionForm->authorId;
-                    $subscription->phone = $subscriptionForm->phone;
-
-                    if ($subscription->save()) {
-                        AuthorSubscriptionVerification::deleteAll([
-                            'author_id' => $subscriptionForm->authorId,
-                            'phone' => $subscriptionForm->phone,
-                        ]);
-                        Yii::$app->session->remove("subscription_phone_{$model->id}");
-                        Yii::$app->session->setFlash('success', 'Вы успешно подписались на обновления!');
-                        return $this->refresh();
-                    }
-                    Yii::$app->session->setFlash('error', 'Ошибка при сохранении подписки.');
-                } else {
-                    AuthorSubscriptionVerification::deleteAll([
-                        'author_id' => $subscriptionForm->authorId,
-                        'phone' => $subscriptionForm->phone,
-                    ]);
+                if ($result['success']) {
                     Yii::$app->session->remove("subscription_phone_{$model->id}");
-                    Yii::$app->session->setFlash('info', 'Вы уже подписаны на обновления этого автора.');
                     return $this->refresh();
                 }
             }
