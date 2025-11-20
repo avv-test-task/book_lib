@@ -26,20 +26,22 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {update} {delete}',
+                'headerOptions' => ['class' => 'action-column'],
+                'contentOptions' => ['class' => 'action-column'],
                 'buttons' => [
                     'view' => function ($url, $model) {
-                        return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
-                            'title' => 'Просмотр',
+                        return Html::a('Просмотр', $url, [
+                            'class' => 'btn btn-sm btn-primary',
                         ]);
                     },
                     'update' => function ($url, $model) {
-                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
-                            'title' => 'Редактировать',
+                        return Html::a('Редактировать', $url, [
+                            'class' => 'btn btn-sm btn-warning',
                         ]);
                     },
                     'delete' => function ($url, $model) {
-                        return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
-                            'title' => 'Удалить',
+                        return Html::a('Удалить', $url, [
+                            'class' => 'btn btn-sm btn-danger',
                             'data-confirm' => 'Вы уверены, что хотите удалить этот элемент?',
                             'data-method' => 'post',
                         ]);
