@@ -17,7 +17,7 @@ Yii::setAlias('@coversUrl', '/uploads/covers');
 // Register event listener for book creation
 Event::on(
     BookService::class,
-    BookService::EVENT_BOOK_CREATED,
+    BookService::EVENT_BOOK_CREATED_NOTIFICATION,
     function (BookCreatedNotificationEvent $event): void {
         $listener = new BookSmsNotificationListener();
         $listener->handle($event);
