@@ -6,9 +6,6 @@ use common\services\contracts\SmsServiceInterface;
 use Yii;
 use yii\base\InvalidConfigException;
 
-/**
- * SMS service implementation using smspilot.ru API.
- */
 class SmspilotSmsService implements SmsServiceInterface
 {
     /**
@@ -28,7 +25,7 @@ class SmspilotSmsService implements SmsServiceInterface
      */
     public function __construct($apiKey = null)
     {
-        $this->apiKey = $apiKey ?: Yii::$app->params['smspilot']['apiKey'] ?? null;
+        $this->apiKey = $apiKey ?: Yii::$app->params['smspilot']['apiKey'];
 
         if ($this->apiKey === null) {
             throw new InvalidConfigException('API ключ SMS не настроен.');
@@ -41,8 +38,8 @@ class SmspilotSmsService implements SmsServiceInterface
     public function send($phone, $message)
     {
         $params = [
-            'send' => $phone,
-            'text' => $message,
+            'to' => $phone,
+            'send' => $message,
             'apikey' => $this->apiKey,
             'format' => 'json',
         ];
