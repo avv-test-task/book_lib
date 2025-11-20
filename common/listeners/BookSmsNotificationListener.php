@@ -5,61 +5,27 @@ declare(strict_types=1);
 namespace common\listeners;
 
 use common\events\BookCreatedNotificationEvent;
-use common\models\Author;
-use common\models\AuthorSubscription;
-use common\services\contracts\SmsServiceInterface;
-use Throwable;
+use common\services\BookService;
 use Yii;
 use yii\base\BaseObject;
 
 class BookSmsNotificationListener extends BaseObject
 {
-    private ?SmsServiceInterface $smsService = null;
-
     /**
      * @param array<string, mixed> $config
      */
-    public function __construct(?SmsServiceInterface $smsService = null, array $config = [])
+    public function __construct(array $config = [])
     {
         parent::__construct($config);
-        $this->smsService = $smsService;
     }
 
     public function handle(BookCreatedNotificationEvent $event): void
     {
-        $book = $event->book;
-
-        if (!$this->smsService instanceof SmsServiceInterface) {
-            try {
-                $this->smsService = Yii::$container->get(SmsServiceInterface::class);
-            } catch (Throwable $e) {
-                Yii::warning("Не удалось получить SmsServiceInterface: {$e->getMessage()}", __METHOD__);
-                return;
-            }
-        }
-
-        $subscriptions = AuthorSubscription::find()
-            ->innerJoin('{{%book_author}} ba', 'ba.author_id = {{%author_subscription}}.author_id')
-            ->where(['ba.book_id' => $book->id])
-            ->with('author')
-            ->all();
-
-        if (empty($subscriptions)) {
-            return;
-        }
-
-        foreach ($subscriptions as $subscription) {
-            if ($subscription->author === null) {
-                continue;
-            }
-
-            $message = 'Новая книга "' . $book->name . '" от ' . $subscription->author->name . ' доступна в библиотеке!';
-
-            try {
-                $this->smsService->send($subscription->phone, $message);
-            } catch (Throwable $exception) {
-                Yii::error("Не удалось отправить SMS на номер {$subscription->phone}: {$exception->getMessage()}", __METHOD__);
-            }
+        try {
+            $bookService = Yii::$container->get(BookService::class);
+            $bookService->notifySubscribers($event->book);
+        } catch (\Throwable $e) {
+            Yii::warning("Не удалось получить отправить сообщение: {$e->getMessage()}", __METHOD__);
         }
     }
 }

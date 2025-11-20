@@ -6,9 +6,11 @@ namespace common\services;
 
 use common\events\BookCreatedNotificationEvent;
 use common\models\Author;
+use common\models\AuthorSubscription;
 use common\models\Book;
 use common\models\BookForm;
 use common\services\contracts\BookServiceInterface;
+use common\services\contracts\SmsServiceInterface;
 use common\services\contracts\StorageServiceInterface;
 use DomainException;
 use Throwable;
@@ -22,10 +24,12 @@ class BookService extends Component implements BookServiceInterface
     const EVENT_BOOK_CREATED_NOTIFICATION = 'bookCreatedNotification';
 
     private StorageServiceInterface $storage;
+    private ?SmsServiceInterface $smsService;
 
-    public function __construct(StorageServiceInterface $storage)
+    public function __construct(StorageServiceInterface $storage, ?SmsServiceInterface $smsService = null)
     {
         $this->storage = $storage;
+        $this->smsService = $smsService;
     }
 
     /**
@@ -34,7 +38,7 @@ class BookService extends Component implements BookServiceInterface
     public function create(BookForm $form): Book
     {
         if (!$form->validate()) {
-            throw new DomainException('Book form is not valid.');
+            throw new DomainException('Ошибка валидации.');
         }
 
         $book = new Book();
@@ -44,7 +48,7 @@ class BookService extends Component implements BookServiceInterface
         $transaction = Yii::$app->db->beginTransaction();
         try {
             if (!$book->save()) {
-                throw new DomainException('Failed to save book.');
+                throw new DomainException('Не удалось сохранить.');
             }
 
             $this->saveCover($book, $form->coverFile);
@@ -68,7 +72,7 @@ class BookService extends Component implements BookServiceInterface
     public function update(Book $book, BookForm $form): Book
     {
         if (!$form->validate()) {
-            throw new DomainException('Book form is not valid.');
+            throw new DomainException('Ошибка валидации.');
         }
 
         $form->applyToBook($book);
@@ -82,7 +86,7 @@ class BookService extends Component implements BookServiceInterface
             }
 
             if (!$book->save()) {
-                throw new DomainException('Failed to save book.');
+                throw new DomainException('Не удалось сохранить.');
             }
 
             $this->saveCover($book, $form->coverFile);
@@ -110,7 +114,7 @@ class BookService extends Component implements BookServiceInterface
             $book->unlinkAll('authors', true);
 
             if ($book->delete() === false) {
-                throw new DomainException('Failed to delete book.');
+                throw new DomainException('Не удалось удалить.');
             }
 
             if ($coverPath) {
@@ -137,7 +141,7 @@ class BookService extends Component implements BookServiceInterface
         $book->cover_path = $this->storage->saveCover($file);
 
         if (!$book->save(false, ['cover_path'])) {
-            throw new DomainException('Failed to update book cover path.');
+            throw new DomainException('Не удалось обновить обложку.');
         }
     }
 
@@ -163,6 +167,42 @@ class BookService extends Component implements BookServiceInterface
             }
 
             $book->link('authors', $authors[$authorId]);
+        }
+    }
+
+    public function notifySubscribers(Book $book): void
+    {
+        if ($this->smsService === null) {
+            try {
+                $this->smsService = Yii::$container->get(SmsServiceInterface::class);
+            } catch (Throwable $e) {
+                Yii::warning("Не удалось получить SmsServiceInterface: {$e->getMessage()}", __METHOD__);
+                return;
+            }
+        }
+
+        $subscriptions = AuthorSubscription::find()
+            ->innerJoin('{{%book_author}} ba', 'ba.author_id = {{%author_subscription}}.author_id')
+            ->where(['ba.book_id' => $book->id])
+            ->with('author')
+            ->all();
+
+        if (empty($subscriptions)) {
+            return;
+        }
+
+        foreach ($subscriptions as $subscription) {
+            if ($subscription->author === null) {
+                continue;
+            }
+
+            $message = 'Новая книга "' . $book->name . '" от ' . $subscription->author->name . ' доступна в библиотеке!';
+
+            try {
+                $this->smsService->send($subscription->phone, $message);
+            } catch (Throwable $exception) {
+                Yii::error("Не удалось отправить SMS на номер {$subscription->phone}: {$exception->getMessage()}", __METHOD__);
+            }
         }
     }
 }
