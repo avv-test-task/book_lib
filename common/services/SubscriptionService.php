@@ -146,5 +146,13 @@ class SubscriptionService implements SubscriptionServiceInterface
             'alreadySubscribed' => false,
         ];
     }
+
+    public function cancelVerification(int $authorId, string $phone): void
+    {
+        AuthorSubscriptionVerification::deleteAll([
+            'author_id' => $authorId,
+            'phone' => $phone,
+        ]);
+    }
 }
 

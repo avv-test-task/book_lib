@@ -17,5 +17,7 @@ interface SubscriptionServiceInterface
      * @return array{success: bool, message: string, alreadySubscribed: bool}
      */
     public function verifyAndSubscribe(int $authorId, string $phone, string $code): array;
+
+    public function cancelVerification(int $authorId, string $phone): void;
 }
 

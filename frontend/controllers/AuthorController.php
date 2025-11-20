@@ -48,7 +48,7 @@ class AuthorController extends Controller
         $model = Author::find()->where(['id' => $id])->one();
 
         if ($model === null) {
-            throw new NotFoundHttpException('Запрошенный автор не существует.');
+            throw new NotFoundHttpException('Автор не найден.');
         }
 
         $subscriptionForm = new AuthorSubscriptionForm();
@@ -56,6 +56,12 @@ class AuthorController extends Controller
 
         $phoneInSession = Yii::$app->session->get("subscription_phone_{$model->id}", null);
         $codeSent = $phoneInSession !== null;
+
+        if (Yii::$app->request->get('cancel') === '1' && $phoneInSession !== null) {
+            $this->subscriptionService->cancelVerification($model->id, $phoneInSession);
+            Yii::$app->session->remove("subscription_phone_{$model->id}");
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
 
         if ($subscriptionForm->load(Yii::$app->request->post())) {
             if (empty($subscriptionForm->verificationCode)) {

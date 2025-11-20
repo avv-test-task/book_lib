@@ -62,6 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="form-group">
                 <?= Html::submitButton('Подтвердить и подписаться', ['class' => 'btn btn-success']) ?>
+                <?= Html::a('Отмена', ['view', 'id' => $model->id, 'cancel' => '1'], ['class' => 'btn btn-secondary']) ?>
             </div>
         <?php endif; ?>
 
