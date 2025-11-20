@@ -57,7 +57,7 @@ class BookForm extends Model
                 'exist',
                 'skipOnError' => true,
                 'targetClass' => Author::class,
-                'targetAttribute' => ['authorIds' => 'id'],
+                'targetAttribute' => 'id',
                 'allowArray' => true,
             ],
             [

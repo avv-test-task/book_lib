@@ -28,7 +28,17 @@ class LocalStorageService implements StorageServiceInterface
      */
     public function __construct($basePath = null, $baseUrl = null)
     {
-        $this->basePath = $basePath ?: Yii::getAlias('@frontend/web/uploads/covers');
+        if ($basePath === null) {
+            $appId = Yii::$app->id;
+            if (strpos($appId, 'backend') !== false) {
+                $this->basePath = Yii::getAlias('@backend/web/uploads/covers');
+            } else {
+                $this->basePath = Yii::getAlias('@frontend/web/uploads/covers');
+            }
+        } else {
+            $this->basePath = $basePath;
+        }
+        
         $this->baseUrl = $baseUrl ?: '/uploads/covers';
     }
 
