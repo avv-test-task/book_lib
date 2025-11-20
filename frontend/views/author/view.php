@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model Author */
 /* @var $subscriptionForm AuthorSubscriptionForm */
+/* @var bool $codeSent */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Авторы', 'url' => ['index']];
@@ -33,20 +34,36 @@ $this->params['breadcrumbs'][] = $this->title;
         <h3>Подписаться на обновления</h3>
         <p>Получайте уведомления о новых книгах этого автора на ваш телефон</p>
         <?php $form = ActiveForm::begin([
-            'action' => ['subscribe', 'id' => $model->id],
             'method' => 'post',
         ]); ?>
 
-        <?= $form->field($subscriptionForm, 'phone')->textInput([
-            'placeholder' => '+79001234567',
-            'maxlength' => 20,
-        ])->label('Номер телефона') ?>
-
         <?= Html::activeHiddenInput($subscriptionForm, 'authorId') ?>
 
-        <div class="form-group">
-            <?= Html::submitButton('Подписаться', ['class' => 'btn btn-success']) ?>
-        </div>
+        <?php if (!$codeSent): ?>
+            <?= $form->field($subscriptionForm, 'phone')->textInput([
+                'placeholder' => '+79001234567',
+                'maxlength' => 20,
+            ])->label('Номер телефона') ?>
+
+            <div class="form-group">
+                <?= Html::submitButton('Отправить код подтверждения', ['class' => 'btn btn-success']) ?>
+            </div>
+        <?php else: ?>
+            <?= $form->field($subscriptionForm, 'phone')->textInput([
+                'readonly' => true,
+                'maxlength' => 20,
+            ])->label('Номер телефона') ?>
+
+            <?= $form->field($subscriptionForm, 'verificationCode')->textInput([
+                'placeholder' => '0000',
+                'maxlength' => 4,
+                'style' => 'width: 150px;',
+            ])->label('Код подтверждения') ?>
+
+            <div class="form-group">
+                <?= Html::submitButton('Подтвердить и подписаться', ['class' => 'btn btn-success']) ?>
+            </div>
+        <?php endif; ?>
 
         <?php ActiveForm::end(); ?>
     </div>

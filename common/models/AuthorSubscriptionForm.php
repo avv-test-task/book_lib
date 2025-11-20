@@ -20,6 +20,11 @@ class AuthorSubscriptionForm extends Model
     public $authorId;
 
     /**
+     * @var string|null
+     */
+    public $verificationCode;
+
+    /**
      * {@inheritdoc}
      */
     public function rules()
@@ -31,6 +36,8 @@ class AuthorSubscriptionForm extends Model
             [['authorId'], 'integer'],
             [['phone'], 'match', 'pattern' => '/^(\+7|8|7)?[\d]{10,11}$/', 'message' => 'Номер телефона должен быть в формате +79001234567, 89001234567 или 9001234567', 'skipOnEmpty' => false],
             [['phone'], 'validatePhone'],
+            [['verificationCode'], 'string', 'length' => 4, 'skipOnEmpty' => true],
+            [['verificationCode'], 'match', 'pattern' => '/^\d{4}$/', 'message' => 'Код подтверждения должен содержать 4 цифры.', 'skipOnEmpty' => true],
             [['authorId'], 'exist', 'skipOnError' => true, 'targetClass' => Author::class, 'targetAttribute' => ['authorId' => 'id']],
         ];
     }
@@ -65,6 +72,7 @@ class AuthorSubscriptionForm extends Model
         return [
             'phone' => 'Номер телефона',
             'authorId' => 'Автор',
+            'verificationCode' => 'Код подтверждения',
         ];
     }
 
