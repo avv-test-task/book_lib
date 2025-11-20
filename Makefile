@@ -6,6 +6,6 @@ phpstan:
 rector:
 	docker compose exec backend vendor/bin/rector process --dry-run
 
-phpstan-fix:
+rector-fix:
 	docker compose exec backend vendor/bin/rector process --no-progress-bar
 
