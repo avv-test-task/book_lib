@@ -86,6 +86,7 @@ class BookController extends Controller
 
             try {
                 $book = $this->bookService->create($form);
+                Yii::$app->session->setFlash('success', 'Книга создана успешно');
 
                 return $this->redirect(['update', 'id' => $book->id]);
             } catch (\DomainException $exception) {
@@ -99,8 +100,6 @@ class BookController extends Controller
     }
 
     /**
-     * Updates an existing Book model.
-     *
      * @param int $id
      *
      * @return string|\yii\web\Response

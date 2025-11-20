@@ -62,6 +62,8 @@ class AuthorController extends Controller
         $model = new Author();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Автор создан успешно');
+
             return $this->redirect(['update', 'id' => $model->id]);
         }
 

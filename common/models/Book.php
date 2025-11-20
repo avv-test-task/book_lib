@@ -52,8 +52,22 @@ class Book extends ActiveRecord
             [['name'], 'string', 'max' => 255],
             [['isbn'], 'string', 'max' => 20],
             [['cover_path'], 'string', 'max' => 255],
-            [['isbn'], 'unique'],
+            [['isbn'], 'unique', 'skipOnEmpty' => true],
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($this->isbn === '') {
+                $this->isbn = null;
+            }
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -107,8 +107,6 @@ class BookForm extends Model
     }
 
     /**
-     * Applies form data to a Book model.
-     *
      * @param Book $book
      */
     public function applyToBook(Book $book)
