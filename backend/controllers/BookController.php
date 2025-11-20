@@ -59,8 +59,6 @@ class BookController extends Controller
     }
 
     /**
-     * Lists all Book models.
-     *
      * @return string
      */
     public function actionIndex(): string
@@ -75,8 +73,6 @@ class BookController extends Controller
     }
 
     /**
-     * Creates a new Book model.
-     *
      * @return string|Response
      */
     public function actionCreate(): string|Response
@@ -103,9 +99,7 @@ class BookController extends Controller
 
     /**
      * @param int $id
-     *
      * @return string|Response
-     *
      * @throws NotFoundHttpException
      */
     public function actionUpdate(int $id): string|Response
@@ -135,12 +129,8 @@ class BookController extends Controller
     }
 
     /**
-     * Deletes an existing Book model.
-     *
      * @param int $id
-     *
      * @return Response
-     *
      * @throws NotFoundHttpException
      */
     public function actionDelete(int $id): Response

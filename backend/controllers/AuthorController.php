@@ -40,8 +40,6 @@ class AuthorController extends Controller
     }
 
     /**
-     * Lists all Author models.
-     *
      * @return string
      */
     public function actionIndex(): string
@@ -56,8 +54,6 @@ class AuthorController extends Controller
     }
 
     /**
-     * Creates a new Author model.
-     *
      * @return string|Response
      */
     public function actionCreate(): string|Response
@@ -76,8 +72,6 @@ class AuthorController extends Controller
     }
 
     /**
-     * Updates an existing Author model.
-     *
      * @param int $id
      *
      * @return string|Response
@@ -100,8 +94,6 @@ class AuthorController extends Controller
     }
 
     /**
-     * Deletes an existing Author model.
-     *
      * @param int $id
      *
      * @return Response

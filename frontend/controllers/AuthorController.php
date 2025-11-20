@@ -32,8 +32,6 @@ class AuthorController extends Controller
         parent::__construct($id, $module, $config);
     }
     /**
-     * Lists all Author models.
-     *
      * @return string
      */
     public function actionIndex(): string
@@ -54,12 +52,8 @@ class AuthorController extends Controller
     }
 
     /**
-     * Displays a single Author model.
-     *
      * @param int $id
-     *
      * @return string
-     *
      * @throws NotFoundHttpException
      */
     public function actionView(int $id): string
