@@ -56,8 +56,6 @@ class AuthorController extends Controller
         $subscriptionForm->authorId = $model->id;
 
         if ($subscriptionForm->load(Yii::$app->request->post())) {
-            $subscriptionForm->phone = AuthorSubscriptionForm::normalizePhone($subscriptionForm->phone);
-
             if ($subscriptionForm->validate()) {
                 $existingSubscription = AuthorSubscription::find()
                     ->where(['author_id' => $subscriptionForm->authorId, 'phone' => $subscriptionForm->phone])
@@ -108,8 +106,6 @@ class AuthorController extends Controller
         $form->authorId = $id;
 
         if ($form->load(Yii::$app->request->post())) {
-            $form->phone = AuthorSubscriptionForm::normalizePhone($form->phone);
-
             if ($form->validate()) {
                 $existingSubscription = AuthorSubscription::find()
                     ->where(['author_id' => $form->authorId, 'phone' => $form->phone])

@@ -25,12 +25,36 @@ class AuthorSubscriptionForm extends Model
     public function rules()
     {
         return [
-            [['phone', 'authorId'], 'required'],
+            [['phone', 'authorId'], 'required', 'message' => 'Поле "{attribute}" обязательно для заполнения.'],
+            [['phone'], 'filter', 'filter' => 'trim'],
+            [['phone'], 'string', 'max' => 20, 'min' => 1, 'tooShort' => 'Номер телефона не может быть пустым.'],
             [['authorId'], 'integer'],
-            [['phone'], 'string', 'max' => 20],
-            [['phone'], 'match', 'pattern' => '/^\+?[1-9]\d{1,14}$/', 'message' => 'Номер телефона должен быть в международном формате (например: +79001234567)'],
+            [['phone'], 'match', 'pattern' => '/^(\+7|8|7)?[\d]{10,11}$/', 'message' => 'Номер телефона должен быть в формате +79001234567, 89001234567 или 9001234567', 'skipOnEmpty' => false],
+            [['phone'], 'validatePhone'],
             [['authorId'], 'exist', 'skipOnError' => true, 'targetClass' => Author::class, 'targetAttribute' => ['authorId' => 'id']],
         ];
+    }
+
+    /**
+     * Validates phone number after normalization.
+     *
+     * @param string $attribute
+     */
+    public function validatePhone($attribute)
+    {
+        $phone = $this->normalizePhone($this->$attribute);
+
+        if (empty($phone)) {
+            $this->addError($attribute, 'Номер телефона не может быть пустым.');
+            return;
+        }
+
+        if (!preg_match('/^\+7\d{10}$/', $phone)) {
+            $this->addError($attribute, 'Номер телефона должен быть в международном формате (например: +79001234567).');
+            return;
+        }
+
+        $this->$attribute = $phone;
     }
 
     /**
@@ -53,17 +77,40 @@ class AuthorSubscriptionForm extends Model
      */
     public static function normalizePhone($phone)
     {
-        $phone = preg_replace('/[^\d+]/', '', $phone);
-
-        if (strpos($phone, '+') !== 0 && strlen($phone) === 11 && substr($phone, 0, 1) === '8') {
-            $phone = '+7' . substr($phone, 1);
-        } elseif (strpos($phone, '+') !== 0 && strlen($phone) === 11 && substr($phone, 0, 1) === '7') {
-            $phone = '+' . $phone;
-        } elseif (strpos($phone, '+') !== 0 && strlen($phone) === 10) {
-            $phone = '+7' . $phone;
+        if (empty($phone)) {
+            return '';
         }
 
-        return $phone;
+        $phone = preg_replace('/[^\d+]/', '', trim($phone));
+
+        if (empty($phone)) {
+            return '';
+        }
+
+        if (strlen($phone) < 10 || strlen($phone) > 12) {
+            return '';
+        }
+
+        if (strpos($phone, '+') === 0) {
+            if (strlen($phone) === 12 && substr($phone, 0, 2) === '+7') {
+                return $phone;
+            }
+            return '';
+        }
+
+        if (strlen($phone) === 11 && substr($phone, 0, 1) === '8') {
+            return '+7' . substr($phone, 1);
+        }
+
+        if (strlen($phone) === 11 && substr($phone, 0, 1) === '7') {
+            return '+' . $phone;
+        }
+
+        if (strlen($phone) === 10) {
+            return '+7' . $phone;
+        }
+
+        return '';
     }
 }
 
