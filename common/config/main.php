@@ -10,6 +10,8 @@ use common\services\LocalStorageService;
 use common\services\ReportService;
 use common\services\SmspilotSmsService;
 use common\services\SubscriptionService;
+use yii\caching\FileCache;
+use yii\i18n\PhpMessageSource;
 
 return [
     'aliases' => [
@@ -28,12 +30,12 @@ return [
     ],
     'components' => [
         'cache' => [
-            'class' => \yii\caching\FileCache::class,
+            'class' => FileCache::class,
         ],
         'i18n' => [
             'translations' => [
                 'app*' => [
-                    'class' => \yii\i18n\PhpMessageSource::class,
+                    'class' => PhpMessageSource::class,
                     'basePath' => '@common/messages',
                     'fileMap' => [
                         'app' => 'app.php',

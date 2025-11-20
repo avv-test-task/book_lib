@@ -1,5 +1,7 @@
 <?php
 
+use common\models\Book;
+use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
 
@@ -27,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'headerOptions' => ['style' => 'width: 80px'],
                 'contentOptions' => ['style' => 'width: 80px; text-align: center'],
-                'value' => function (\common\models\Book $model) {
+                'value' => function (Book $model) {
                     if ($model->cover_path && $coverUrl = $model->getCoverUrl()) {
                         return Html::img($coverUrl, [
                             'alt' => Html::encode($model->name),
@@ -40,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'name',
                 'format' => 'raw',
-                'value' => function (\common\models\Book $model) {
+                'value' => function (Book $model) {
                     $name = Html::encode($model->name);
                     if (mb_strlen($name) > 40) {
                         return '<span title="' . $name . '">' . mb_substr($name, 0, 37) . '...</span>';
@@ -61,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Авторы',
                 'format' => 'raw',
-                'value' => function (\common\models\Book $model): string {
+                'value' => function (Book $model): string {
                     $authors = array_map(static fn($author) => Html::encode($author->name), $model->authors);
                     $fullText = implode(', ', $authors);
                     $text = $fullText;
@@ -72,10 +74,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             [
-                'class' => 'yii\grid\ActionColumn',
+                'class' => ActionColumn::class,
                 'template' => '{update} {delete}',
-                'headerOptions' => ['class' => 'action-column', 'style' => 'width: 200px !important; min-width: 200px !important;'],
-                'contentOptions' => ['class' => 'action-column', 'style' => 'width: 200px !important; min-width: 200px !important; white-space: nowrap !important;'],
+                'headerOptions' => ['class' => 'action-column'],
+                'contentOptions' => ['class' => 'action-column'],
                 'buttons' => [
                     'update' => fn($url, $model) => Html::a('Редактировать', $url, [
                         'class' => 'btn btn-sm btn-warning',

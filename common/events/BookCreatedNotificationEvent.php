@@ -9,9 +9,6 @@ use yii\base\Event;
 
 class BookCreatedNotificationEvent extends Event
 {
-    /**
-     * @var Book The created book
-     */
     public Book $book;
 }
 

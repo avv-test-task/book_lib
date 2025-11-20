@@ -1,5 +1,6 @@
 <?php
 
+use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
 
@@ -24,10 +25,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'name',
             [
-                'class' => 'yii\grid\ActionColumn',
+                'class' => ActionColumn::class,
                 'template' => '{update} {delete}',
-                'headerOptions' => ['class' => 'action-column', 'style' => 'width: 200px !important; min-width: 200px !important;'],
-                'contentOptions' => ['class' => 'action-column', 'style' => 'width: 200px !important; min-width: 200px !important; white-space: nowrap !important;'],
+                'headerOptions' => ['class' => 'action-column'],
+                'contentOptions' => ['class' => 'action-column'],
                 'buttons' => [
                     'update' => fn($url, $model) => Html::a('Редактировать', $url, [
                         'class' => 'btn btn-sm btn-warning',
