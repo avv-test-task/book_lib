@@ -23,9 +23,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'tableOptions' => ['class' => 'table table-striped table-bordered'],
         'columns' => [
             [
-                'attribute' => 'id',
-                'headerOptions' => ['style' => 'width: 60px'],
-                'contentOptions' => ['style' => 'width: 60px'],
+                'label' => 'Обложка',
+                'format' => 'raw',
+                'headerOptions' => ['style' => 'width: 80px'],
+                'contentOptions' => ['style' => 'width: 80px; text-align: center'],
+                'value' => function (\common\models\Book $model) {
+                    if ($model->cover_path && $coverUrl = $model->getCoverUrl()) {
+                        return Html::img($coverUrl, [
+                            'alt' => Html::encode($model->name),
+                            'style' => 'max-width: 60px; max-height: 80px; object-fit: cover;',
+                        ]);
+                    }
+                    return '';
+                },
             ],
             [
                 'attribute' => 'name',
