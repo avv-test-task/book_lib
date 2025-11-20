@@ -1,0 +1,59 @@
+<?php
+
+namespace backend\models;
+
+use common\models\Author;
+use yii\base\Model;
+use yii\data\ActiveDataProvider;
+
+class AuthorSearch extends Author
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['id'], 'integer'],
+            [['name'], 'safe'],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function scenarios()
+    {
+        return Model::scenarios();
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function search($params)
+    {
+        $query = Author::find();
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'sort' => [
+                'defaultOrder' => ['name' => SORT_ASC],
+            ],
+        ]);
+
+        $this->load($params);
+
+        if (!$this->validate()) {
+            return $dataProvider;
+        }
+
+        $query->andFilterWhere(['id' => $this->id]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
+
+        return $dataProvider;
+    }
+}
+
+
