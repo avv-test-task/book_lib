@@ -17,8 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>Топ 10 авторов, опубликовавших наибольшее количество книг за выбранный год</p>
 
     <div class="form-group" style="margin-bottom: 20px;">
-        <form method="get" action="/index.php" style="display: inline-block;">
-            <input type="hidden" name="r" value="site/report">
+        <form method="get" action="<?= Url::to(['site/report']) ?>" style="display: inline-block;">
             <label for="year-select" class="control-label">Выберите год:</label>
             <select id="year-select" name="year" class="form-control" style="max-width: 200px; display: inline-block; margin-left: 10px;" onchange="this.form.submit();">
                 <option value="">-- Выберите год --</option>
