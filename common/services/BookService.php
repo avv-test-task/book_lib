@@ -11,11 +11,13 @@ use common\models\BookForm;
 use common\services\contracts\BookServiceInterface;
 use common\services\contracts\StorageServiceInterface;
 use DomainException;
+use Throwable;
 use Yii;
+use yii\base\Component;
 use yii\db\Transaction;
 use yii\web\UploadedFile;
 
-class BookService extends \yii\base\Component implements BookServiceInterface
+class BookService extends Component implements BookServiceInterface
 {
     const EVENT_BOOK_CREATED = 'bookCreated';
 
@@ -52,7 +54,7 @@ class BookService extends \yii\base\Component implements BookServiceInterface
 
             $event = new BookCreatedNotificationEvent(['book' => $book]);
             $this->trigger(self::EVENT_BOOK_CREATED, $event);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $transaction->rollBack();
             throw $exception;
         }
@@ -87,7 +89,7 @@ class BookService extends \yii\base\Component implements BookServiceInterface
             $this->syncAuthors($book, $form->authorIds);
 
             $transaction->commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $transaction->rollBack();
             throw $exception;
         }
@@ -116,7 +118,7 @@ class BookService extends \yii\base\Component implements BookServiceInterface
             }
 
             $transaction->commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $transaction->rollBack();
             throw $exception;
         }

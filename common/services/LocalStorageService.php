@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace common\services;
 
 use common\services\contracts\StorageServiceInterface;
+use RuntimeException;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
@@ -43,7 +44,7 @@ class LocalStorageService implements StorageServiceInterface
         $filePath = $this->basePath . DIRECTORY_SEPARATOR . $fileName;
 
         if (!$file->saveAs($filePath)) {
-            throw new \RuntimeException('Failed to save uploaded file.');
+            throw new RuntimeException('Failed to save uploaded file.');
         }
 
         return $this->baseUrl . '/' . $fileName;

@@ -11,6 +11,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class AuthorController extends Controller
 {
@@ -57,9 +58,9 @@ class AuthorController extends Controller
     /**
      * Creates a new Author model.
      *
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
-    public function actionCreate(): string|\yii\web\Response
+    public function actionCreate(): string|Response
     {
         $model = new Author();
 
@@ -79,11 +80,11 @@ class AuthorController extends Controller
      *
      * @param int $id
      *
-     * @return string|\yii\web\Response
+     * @return string|Response
      *
      * @throws NotFoundHttpException
      */
-    public function actionUpdate(int $id): string|\yii\web\Response
+    public function actionUpdate(int $id): string|Response
     {
         $model = $this->findModel($id);
 
@@ -103,11 +104,11 @@ class AuthorController extends Controller
      *
      * @param int $id
      *
-     * @return \yii\web\Response
+     * @return Response
      *
      * @throws NotFoundHttpException
      */
-    public function actionDelete(int $id): \yii\web\Response
+    public function actionDelete(int $id): Response
     {
         $this->findModel($id)->delete();
 

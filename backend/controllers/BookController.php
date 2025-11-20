@@ -8,11 +8,14 @@ use backend\models\BookSearch;
 use common\models\Book;
 use common\models\BookForm;
 use common\services\contracts\BookServiceInterface;
+use DomainException;
 use Yii;
+use yii\base\Module;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 class BookController extends Controller
@@ -21,11 +24,11 @@ class BookController extends Controller
 
     /**
      * @param string $id
-     * @param \yii\base\Module $module
+     * @param Module $module
      * @param BookServiceInterface $bookService
      * @param array<string, mixed> $config
      */
-    public function __construct(string $id, $module, BookServiceInterface $bookService, array $config = [])
+    public function __construct(string $id, Module $module, BookServiceInterface $bookService, array $config = [])
     {
         $this->bookService = $bookService;
         parent::__construct($id, $module, $config);
@@ -74,9 +77,9 @@ class BookController extends Controller
     /**
      * Creates a new Book model.
      *
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
-    public function actionCreate(): string|\yii\web\Response
+    public function actionCreate(): string|Response
     {
         $form = new BookForm();
 
@@ -88,7 +91,7 @@ class BookController extends Controller
                 Yii::$app->session->setFlash('success', 'Книга создана успешно');
 
                 return $this->redirect(['update', 'id' => $book->id]);
-            } catch (\DomainException $exception) {
+            } catch (DomainException $exception) {
                 Yii::$app->session->setFlash('error', $exception->getMessage());
             }
         }
@@ -101,11 +104,11 @@ class BookController extends Controller
     /**
      * @param int $id
      *
-     * @return string|\yii\web\Response
+     * @return string|Response
      *
      * @throws NotFoundHttpException
      */
-    public function actionUpdate(int $id): string|\yii\web\Response
+    public function actionUpdate(int $id): string|Response
     {
         $book = $this->findModel($id);
 
@@ -120,7 +123,7 @@ class BookController extends Controller
                 Yii::$app->session->setFlash('success', 'Обновлено успешно');
 
                 return $this->redirect(['update', 'id' => $book->id]);
-            } catch (\DomainException $exception) {
+            } catch (DomainException $exception) {
                 Yii::$app->session->setFlash('error', $exception->getMessage());
             }
         }
@@ -136,11 +139,11 @@ class BookController extends Controller
      *
      * @param int $id
      *
-     * @return \yii\web\Response
+     * @return Response
      *
      * @throws NotFoundHttpException
      */
-    public function actionDelete(int $id): \yii\web\Response
+    public function actionDelete(int $id): Response
     {
         $book = $this->findModel($id);
         $this->bookService->delete($book);

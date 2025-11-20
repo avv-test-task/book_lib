@@ -8,6 +8,7 @@ use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\base\Module;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -28,11 +29,11 @@ class SiteController extends Controller
 
     /**
      * @param string $id
-     * @param \yii\base\Module $module
+     * @param Module $module
      * @param ReportServiceInterface $reportService
      * @param array<string, mixed> $config
      */
-    public function __construct(string $id, $module, ReportServiceInterface $reportService, array $config = [])
+    public function __construct(string $id, Module $module, ReportServiceInterface $reportService, array $config = [])
     {
         $this->reportService = $reportService;
         parent::__construct($id, $module, $config);

@@ -10,6 +10,7 @@ use common\models\AuthorSubscriptionForm;
 use common\models\AuthorSubscriptionVerification;
 use common\services\contracts\SmsServiceInterface;
 use Yii;
+use yii\base\Module;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -21,11 +22,11 @@ class AuthorController extends Controller
 
     /**
      * @param string $id
-     * @param \yii\base\Module $module
+     * @param Module $module
      * @param SmsServiceInterface|null $smsService
      * @param array<string, mixed> $config
      */
-    public function __construct(string $id, $module, ?SmsServiceInterface $smsService = null, array $config = [])
+    public function __construct(string $id, Module $module, ?SmsServiceInterface $smsService = null, array $config = [])
     {
         $this->smsService = $smsService;
         parent::__construct($id, $module, $config);
