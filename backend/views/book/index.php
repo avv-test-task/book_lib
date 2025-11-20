@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'style' => 'max-width: 60px; max-height: 80px; object-fit: cover;',
                         ]);
                     }
-                    return '';
+                    return '<span class="not-set">(не задано)</span>';
                 },
             ],
             [

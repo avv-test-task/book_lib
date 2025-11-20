@@ -37,6 +37,7 @@ AppAsset::register($this);
     $menuItems = [
         ['label' => 'Книги', 'url' => ['/book/index']],
         ['label' => 'Авторы', 'url' => ['/author/index']],
+        ['label' => 'Отчет', 'url' => ['/site/report']],
     ];
 
     echo Nav::widget([

@@ -11,6 +11,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
+use common\services\contracts\ReportServiceInterface;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
@@ -21,6 +22,22 @@ use frontend\models\ContactForm;
  */
 class SiteController extends Controller
 {
+    /**
+     * @var ReportServiceInterface
+     */
+    private $reportService;
+
+    /**
+     * @param string                  $id
+     * @param \yii\base\Module       $module
+     * @param ReportServiceInterface $reportService
+     * @param array                  $config
+     */
+    public function __construct($id, $module, ReportServiceInterface $reportService, $config = [])
+    {
+        $this->reportService = $reportService;
+        parent::__construct($id, $module, $config);
+    }
     /**
      * {@inheritdoc}
      */
@@ -74,6 +91,29 @@ class SiteController extends Controller
     public function actionIndex()
     {
         return $this->redirect(['book/index']);
+    }
+
+    /**
+     * Displays the report page with top 10 authors by year.
+     *
+     * @return string
+     */
+    public function actionReport()
+    {
+        $selectedYear = Yii::$app->request->get('year');
+
+        $availableYears = $this->reportService->getAvailableYears();
+
+        $authorsData = [];
+        if ($selectedYear !== null && $selectedYear !== '') {
+            $authorsData = $this->reportService->getTopAuthorsByYear((int)$selectedYear, 10);
+        }
+
+        return $this->render('report', [
+            'availableYears' => $availableYears,
+            'selectedYear' => $selectedYear,
+            'authorsData' => $authorsData,
+        ]);
     }
 
     /**
