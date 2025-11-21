@@ -27,12 +27,7 @@ class AuthorSearch extends Author
         return Model::scenarios();
     }
 
-    /**
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
-    public function search($params)
+    public function search(array $params): ActiveDataProvider
     {
         $query = Author::find();
 

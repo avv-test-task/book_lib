@@ -28,11 +28,9 @@ class BookSearch extends Book
     }
 
     /**
-     * @param array $params
-     *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search(array $params): ActiveDataProvider
     {
         $query = Book::find()->with('authors');
 
