@@ -1,26 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace frontend\controllers;
 
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\base\Module;
+use yii\captcha\CaptchaAction;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
+use yii\web\ErrorAction;
+use yii\web\Response;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
+use common\services\contracts\ReportServiceInterface;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 
-/**
- * Site controller
- */
 class SiteController extends Controller
 {
+    private ReportServiceInterface $reportService;
+
+    /**
+     * @param array<string, mixed> $config
+     */
+    public function __construct(string $id, Module $module, ReportServiceInterface $reportService, array $config = [])
+    {
+        $this->reportService = $reportService;
+        parent::__construct($id, $module, $config);
+    }
     /**
      * {@inheritdoc}
      */
@@ -59,28 +73,42 @@ class SiteController extends Controller
     {
         return [
             'error' => [
-                'class' => \yii\web\ErrorAction::class,
+                'class' => ErrorAction::class,
             ],
             'captcha' => [
-                'class' => \yii\captcha\CaptchaAction::class,
+                'class' => CaptchaAction::class,
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
     }
 
     /**
-     * Displays homepage.
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->redirect(['book/index']);
+    }
+
+    public function actionReport(): string
+    {
+        $selectedYear = Yii::$app->request->get('year');
+
+        $availableYears = $this->reportService->getAvailableYears();
+
+        $authorsData = [];
+        if ($selectedYear !== null && $selectedYear !== '') {
+            $authorsData = $this->reportService->getTopAuthorsByYear((int)$selectedYear, 10);
+        }
+
+        return $this->render('report', [
+            'availableYears' => $availableYears,
+            'selectedYear' => $selectedYear,
+            'authorsData' => $authorsData,
+        ]);
     }
 
     /**
-     * Logs in a user.
-     *
      * @return mixed
      */
     public function actionLogin()
@@ -102,8 +130,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Logs out the current user.
-     *
      * @return mixed
      */
     public function actionLogout()
@@ -114,8 +140,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays contact page.
-     *
      * @return mixed
      */
     public function actionContact()
@@ -137,8 +161,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays about page.
-     *
      * @return mixed
      */
     public function actionAbout()
@@ -147,8 +169,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Signs user up.
-     *
      * @return mixed
      */
     public function actionSignup()
@@ -165,8 +185,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Requests password reset.
-     *
      * @return mixed
      */
     public function actionRequestPasswordReset()
@@ -188,13 +206,10 @@ class SiteController extends Controller
     }
 
     /**
-     * Resets password.
-     *
-     * @param string $token
      * @return mixed
      * @throws BadRequestHttpException
      */
-    public function actionResetPassword($token)
+    public function actionResetPassword(string $token)
     {
         try {
             $model = new ResetPasswordForm($token);
@@ -214,13 +229,9 @@ class SiteController extends Controller
     }
 
     /**
-     * Verify email address
-     *
-     * @param string $token
      * @throws BadRequestHttpException
-     * @return yii\web\Response
      */
-    public function actionVerifyEmail($token)
+    public function actionVerifyEmail(string $token): Response
     {
         try {
             $model = new VerifyEmailForm($token);
@@ -236,12 +247,7 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    /**
-     * Resend verification email
-     *
-     * @return mixed
-     */
-    public function actionResendVerificationEmail()
+    public function actionResendVerificationEmail(): string|Response
     {
         $model = new ResendVerificationEmailForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {

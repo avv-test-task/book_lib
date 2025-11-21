@@ -7,11 +7,9 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\ErrorAction;
 use yii\web\Response;
 
-/**
- * Site controller
- */
 class SiteController extends Controller
 {
     /**
@@ -50,24 +48,24 @@ class SiteController extends Controller
     {
         return [
             'error' => [
-                'class' => \yii\web\ErrorAction::class,
+                'class' => ErrorAction::class,
             ],
         ];
     }
 
     /**
-     * Displays homepage.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['login']);
+        }
+
+        return $this->redirect(['book/index']);
     }
 
     /**
-     * Login action.
-     *
      * @return string|Response
      */
     public function actionLogin()
@@ -91,8 +89,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Logout action.
-     *
      * @return Response
      */
     public function actionLogout()

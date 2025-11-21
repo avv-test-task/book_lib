@@ -1,0 +1,22 @@
+parameters:
+    level: 5
+    paths:
+        - common
+        - backend
+        - frontend
+    excludePaths:
+        - */vendor/*
+        - */tests/*
+        - */runtime/*
+        - */web/assets/*
+        - */views/*
+        - */config/main-local.php
+        - */config/test.php
+        - common/models/User.php
+    ignoreErrors:
+        - '#Constant YII_ENV_TEST not found#'
+        - '#Call to an undefined static method Yii::(error|warning|info|trace|getAlias|setAlias)\(\)#'
+        - '#Access to an undefined static property Yii::\$container#'
+        - '#Ternary operator condition is always true#'
+        - '#Property.*does not accept null#'
+
